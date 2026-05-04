@@ -1,0 +1,29 @@
+/* ==========================================================================
+   DEV 1 (Diseño Visual): 
+   Este es tu lienzo. Tu objetivo es que el sistema sea elegante y profesional.
+   Recuerda utilizar los colores de la UES o una paleta sobria.
+   ========================================================================== */
+
+/* Reseteo basico para evitar margenes raros en diferentes navegadores */
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6; /* Fondo gris claro */
+    color: #333; /* Texto oscuro para buena lectura */
+}
+
+/* Ejemplo: Estilo para tu contenedor principal */
+#app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* DEV 1: Continua creando clases para tus formularios, tarjetas, botones y tablas aqui abajo... */
