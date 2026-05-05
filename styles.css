@@ -1,0 +1,1148 @@
+/*
+  ╔══════════════════════════════════════════════════════════════╗
+  ║   SEAE — Sistema de Evaluación de Alternativas Económicas    ║
+  ║   Archivo : styles.css                                       ║
+  ║   Rol     : Estilos visuales (Dev Frontend)                  ║
+  ║                                                              ║
+  ║   ÍNDICE DE SECCIONES:                                       ║
+  ║   1.  Variables globales (Custom Properties)                 ║
+  ║   2.  Reset y base                                           ║
+  ║   3.  Layout principal (.app-wrapper, .main-grid)            ║
+  ║   4.  Header y navegación de métodos                         ║
+  ║   5.  Hero / Título de sección                               ║
+  ║   6.  Tarjetas (.card)                                       ║
+  ║   7.  Formularios y campos de texto                          ║
+  ║   8.  Botones (.btn)                                         ║
+  ║   9.  Panel de resultados                                    ║
+  ║   10. Sección de comparación                                 ║
+  ║   11. Panel de exportación                                   ║
+  ║   12. Toast / notificación                                   ║
+  ║   13. Footer                                                 ║
+  ║   14. Animaciones y keyframes                                ║
+  ║   15. Responsive (breakpoints)                               ║
+  ╚══════════════════════════════════════════════════════════════╝
+*/
+
+
+/* ================================================================
+   1. VARIABLES GLOBALES
+   Cambia aquí los colores / tipografía para re-skinning rápido.
+================================================================ */
+:root {
+
+  /* ── Colores de fondo ───────────────────────────────────────── */
+  --bg-page      : #262d41;   /* Fondo oscuro principal           */
+  --bg-surface   : #111827;   /* Superficie de tarjetas           */
+  --bg-surface-2 : #1a2236;   /* Inputs, chips, elementos internos */
+  --bg-border    : rgba(255, 255, 255, 0.08);
+
+  /* ── Acento Verde (Alternativa A / VPN) ────────────────────── */
+  --green        : #00d18c;
+  --green-dim    : rgba(0, 209, 140, 0.12);
+  --green-glow   : rgba(0, 209, 140, 0.35);
+
+  /* ── Acento Azul (Alternativa B / CAE) ─────────────────────── */
+  --blue         : #3b82f6;
+  --blue-dim     : rgba(59, 130, 246, 0.15);
+  --blue-glow    : rgba(59, 130, 246, 0.30);
+
+  /* ── Acento Ámbar (TIR / Exportar) ─────────────────────────── */
+  --amber        : #f59e0b;
+  --amber-dim    : rgba(245, 158, 11, 0.12);
+  --amber-glow   : rgba(245, 158, 11, 0.30);
+
+  /* ── Acento Púrpura (Comparación) ──────────────────────────── */
+  --purple       : #8b5cf6;
+  --purple-dim   : rgba(139, 92, 246, 0.12);
+  --purple-glow  : rgba(139, 92, 246, 0.30);
+
+  /* ── Semánticos: aceptar / rechazar ────────────────────────── */
+  --color-accept : var(--green);
+  --color-reject : #ef4444;
+  --reject-dim   : rgba(239, 68, 68, 0.12);
+  --reject-glow  : rgba(239, 68, 68, 0.30);
+
+  /* ── Texto ──────────────────────────────────────────────────── */
+  --text-primary   : #ffffff;       /* tulo hero  tí       */
+  --text-secondary : #8b9bb4;
+  --text-muted     : #4a5598;
+
+  /* ── Tipografía ─────────────────────────────────────────────── */
+  --font-display : 'Syne', sans-serif;
+  --font-body    : 'DM Sans', sans-serif;
+
+  /* ── Bordes redondeados ─────────────────────────────────────── */
+  --radius-xs  : 4px;
+  --radius-sm  : 8px;
+  --radius-md  : 14px;
+  --radius-lg  : 20px;
+  --radius-pill: 100px;
+
+  /* ── Sombras ────────────────────────────────────────────────── */
+  --shadow-card : 0 8px 32px rgba(0, 0, 0, 0.45);
+
+  /* ── Espaciado base ─────────────────────────────────────────── */
+  --space-xs : 6px;
+  --space-sm : 12px;
+  --space-md : 20px;
+  --space-lg : 28px;
+  --space-xl : 48px;
+
+  /* ── Transiciones ───────────────────────────────────────────── */
+  --transition-fast   : 0.15s ease;
+  --transition-normal : 0.25s ease;
+  --transition-spring : 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+
+/* ================================================================
+   2. RESET Y BASE
+================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Textura de ruido */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+}
+
+/* Eliminar flechas de number inputs en Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* Eliminar flechas de number inputs en Chrome/Safari */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+
+/* ================================================================
+   3. LAYOUT PRINCIPAL
+================================================================ */
+
+/* Contenedor raíz — centra y limita el ancho */
+.app-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+}
+
+/* Grid de 2 columnas: formularios | resultados */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  padding-bottom: var(--space-md);
+}
+
+/* Columna de formularios — apila las tarjetas verticalmente */
+.col-forms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Columna de resultados — apila las tarjetas verticalmente */
+.col-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Sección de ancho completo (comparación, exportar) */
+.section-full {
+  margin-bottom: var(--space-md);
+}
+
+
+/* ================================================================
+   4. HEADER Y NAVEGACIÓN DE MÉTODOS
+================================================================ */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--bg-border);
+  gap: 16px;
+}
+
+/* ── Marca / Logo ───────────────────────────────── */
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--green-dim);
+  border: 1px solid var(--green-glow);
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* La sílaba "AE" en color acento */
+.brand-accent {
+  color: var(--green);
+}
+
+.brand-tagline {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* ── Navegación de tabs ─────────────────────────── */
+.method-nav {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+}
+
+.nav-tab {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  padding: 9px 22px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  transition:
+    background var(--transition-normal),
+    color var(--transition-normal),
+    box-shadow var(--transition-normal);
+  white-space: nowrap;
+}
+
+.nav-tab:hover {
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+}
+
+/* Estado activo — JS agrega / quita estas clases */
+.nav-tab.tab--active {
+  background: var(--green);
+  color: #000;
+  box-shadow: 0 0 14px var(--green-glow);
+}
+
+.nav-tab.tab--active-blue {
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 0 14px var(--blue-glow);
+}
+
+.nav-tab.tab--active-amber {
+  background: var(--amber);
+  color: #000;
+  box-shadow: 0 0 14px var(--amber-glow);
+}
+
+
+/* ================================================================
+   5. HERO / TÍTULO PRINCIPAL
+================================================================ */
+
+.section-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: 52px 0 36px;
+  flex-wrap: wrap;
+}
+
+.hero-left {
+  flex: 1;
+  min-width: 260px;
+}
+
+/* Badge del método activo (verde / azul / ámbar) */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: var(--green-dim);
+  border: 1px solid var(--green-glow);
+  color: var(--green);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+}
+
+.hero-badge__dot {
+  font-size: 0.5rem;
+}
+
+/* Título principal — color BLANCO (#ffffff) */
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero-title__main {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);   /* Tamaño reducido */
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text-primary);                  /* BLANCO */
+}
+
+/* Subtítulo — degradado verde → azul */
+.hero-title__sub {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.7vw, 2.1rem);       /* Más pequeño que antes */
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--green), #00a8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Descripción lateral */
+.hero-desc {
+  max-width: 480px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.75;
+  flex: 1;
+  min-width: 240px;
+}
+
+
+/* ================================================================
+   6. TARJETAS (.card)
+================================================================ */
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  /* Animación de entrada escalonada (ver Sección 14) */
+  animation: anim-fade-up 0.5s ease both;
+}
+
+/* Brillo decorativo en esquina superior — color según variante */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.card--green::before  { background: var(--green-dim);  }
+.card--blue::before   { background: var(--blue-dim);   }
+.card--amber::before  { background: var(--amber-dim);  }
+.card--purple::before { background: var(--purple-dim); }
+
+/* Animación de entrada escalonada para las tarjetas */
+.card:nth-child(2) { animation-delay: 0.07s; }
+.card:nth-child(3) { animation-delay: 0.14s; }
+.card:nth-child(4) { animation-delay: 0.21s; }
+
+/* ── Encabezado de tarjeta ──────────────────────── */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.card-icon--green  { background: var(--green-dim);  border: 1px solid var(--green-glow); }
+.card-icon--blue   { background: var(--blue-dim);   border: 1px solid var(--blue-glow); }
+.card-icon--amber  { background: var(--amber-dim);  border: 1px solid var(--amber-glow); }
+.card-icon--purple { background: var(--purple-dim); border: 1px solid var(--purple-glow); }
+
+.card-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.card-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+
+/* ================================================================
+   7. FORMULARIOS Y CAMPOS DE TEXTO
+================================================================ */
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* ── Fila de inputs (2 columnas por defecto) ──── */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+/* Fila de 1 columna — ancho completo */
+.field-row--full {
+  grid-template-columns: 1fr;
+}
+
+/* ── Divisor horizontal entre grupos ─────────── */
+.field-divider {
+  height: 1px;
+  background: var(--bg-border);
+  margin: var(--space-xs) 0;
+}
+
+/* ── Grupo de campo (label + input + error) ───── */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Etiqueta */
+.field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  gap: var(--space-xs);
+}
+
+/* Unidad (USD, %, años) */
+.field-unit {
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ── Input de texto y número ──────────────────── */
+.field-input {
+  width: 100%;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  padding: 11px 14px;
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow   var(--transition-fast);
+}
+
+.field-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Estado focus — borde verde acento */
+.field-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-dim);
+}
+
+/* Estado error — borde rojo */
+/* JS agrega clase .field-input--error al validar */
+.field-input--error {
+  border-color: var(--color-reject) !important;
+  box-shadow: 0 0 0 3px var(--reject-dim) !important;
+}
+
+/* Mensaje de error — solo visible cuando el input tiene clase .field-input--error */
+.field-error {
+  font-size: 0.72rem;
+  color: var(--color-reject);
+  display: none;
+}
+
+.field-input--error ~ .field-error {
+  display: block;
+}
+
+
+/* ================================================================
+   8. BOTONES (.btn)
+================================================================ */
+
+/* ── Bloque de botones de acción ──────────────── */
+.action-buttons {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Base de todos los botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-md);
+  padding: 14px 26px;
+  transition:
+    box-shadow   var(--transition-normal),
+    filter       var(--transition-normal),
+    background   var(--transition-normal),
+    color        var(--transition-normal),
+    border-color var(--transition-normal),
+    transform    var(--transition-fast);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Botón primario: Calcular ─────────────────── */
+.btn--primary {
+  flex: 1;
+  min-width: 140px;
+  background: var(--green);
+  color: #000;
+  box-shadow: none;
+}
+
+.btn--primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+/* Spinner del botón primario:
+   JS agrega .btn--loading al botón para mostrarlo */
+.btn__text   { display: block; }
+.btn__spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: anim-spin 0.7s linear infinite;
+}
+
+.btn--loading .btn__text    { display: none; }
+.btn--loading .btn__spinner { display: block; }
+
+/* ── Botón secundario: Limpiar ────────────────── */
+.btn--secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--bg-border);
+}
+
+.btn--secondary:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-dim);
+}
+
+/* ── Botones de exportación ───────────────────── */
+.btn--export {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bg-border);
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+}
+
+.btn--export:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: var(--purple-dim);
+}
+
+
+/* ================================================================
+   9. PANEL DE RESULTADOS
+================================================================ */
+
+/* Estado vacío — antes de calcular */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px var(--space-md);
+  gap: var(--space-sm);
+}
+
+.empty-state__icon {
+  font-size: 2.8rem;
+  opacity: 0.25;
+}
+
+.empty-state__text {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  max-width: 220px;
+  line-height: 1.6;
+}
+
+/* ── Cuerpo de resultados ─────────────────────── */
+.results-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Métrica principal (valor grande) ─────────── */
+.result-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-metric__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.result-metric__value {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.result-metric__value--green { color: var(--green); }
+.result-metric__value--blue  { color: var(--blue);  }
+.result-metric__value--amber { color: var(--amber); }
+
+.result-metric__note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* ── Grid de métricas secundarias ─────────────── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.metric-chip {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.metric-chip__label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metric-chip__value {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ── Badge de decisión: ACEPTAR / RECHAZAR ────── */
+.decision-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 16px var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+/* Estado neutral (antes de calcular) */
+.badge--neutral {
+  background: var(--bg-surface-2);
+  border-color: var(--bg-border);
+  color: var(--text-secondary);
+}
+
+/* Estado aceptar — JS agrega esta clase */
+.badge--accept {
+  background: var(--green-dim);
+  border-color: var(--green-glow);
+  color: var(--green);
+}
+
+/* Estado rechazar — JS agrega esta clase */
+.badge--reject {
+  background: var(--reject-dim);
+  border-color: var(--reject-glow);
+  color: var(--color-reject);
+}
+
+.decision-badge__icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.decision-badge__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.decision-badge__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.decision-badge__sub {
+  font-size: 0.76rem;
+  opacity: 0.8;
+}
+
+
+/* ================================================================
+   10. SECCIÓN DE COMPARACIÓN
+================================================================ */
+
+/* ── Barra proporcional visual ────────────────── */
+.compare-bar-container {
+  margin-bottom: var(--space-lg);
+}
+
+.compare-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-xs);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.compare-bar-labels__a { color: var(--green); font-weight: 600; }
+.compare-bar-labels__b { color: var(--blue);  font-weight: 600; }
+
+.compare-bar-track {
+  height: 10px;
+  background: var(--bg-surface-2);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  display: flex;
+}
+
+.compare-bar-fill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.compare-bar-fill--a {
+  background: linear-gradient(90deg, var(--green), #00a8ff);
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.compare-bar-fill--b {
+  background: linear-gradient(90deg, var(--blue), #818cf8);
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}
+
+.compare-bar-pct {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-xs);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.compare-bar-pct__a { color: var(--green); }
+.compare-bar-pct__b { color: var(--blue);  }
+
+/* ── Tabla comparativa ────────────────────────── */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.compare-table th {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--bg-border);
+  white-space: nowrap;
+}
+
+.compare-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--bg-border);
+  color: var(--text-secondary);
+  transition: background var(--transition-fast);
+}
+
+.compare-table tr:last-child td {
+  border-bottom: none;
+}
+
+.compare-table tr:hover td {
+  background: var(--bg-surface-2);
+}
+
+/* Clase de columna */
+.td-label { font-weight: 500; color: var(--text-primary); }
+.td-a     { color: var(--green); font-weight: 600; }
+.td-b     { color: var(--blue);  font-weight: 600; }
+
+/* Fila ganadora resaltada — JS agrega .row--winner */
+.row--winner td {
+  background: var(--green-dim) !important;
+}
+
+
+/* ================================================================
+   11. PANEL DE EXPORTACIÓN
+================================================================ */
+
+.export-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.export-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.export-info__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.export-info__desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.export-btn-group {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+
+/* ================================================================
+   12. TOAST / NOTIFICACIÓN FLOTANTE
+================================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-md);
+  padding: 14px var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-card);
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  /* Oculto por defecto — JS agrega .toast--show */
+  transform: translateY(80px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--transition-spring),
+    opacity   0.3s ease;
+  z-index: 1000;
+  max-width: 320px;
+}
+
+/* JS agrega esta clase para mostrarlo */
+.toast--show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast__icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.toast__msg {
+  line-height: 1.4;
+}
+
+
+/* ================================================================
+   13. FOOTER
+================================================================ */
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-md) 0 var(--space-lg);
+  border-top: 1px solid var(--bg-border);
+  font-size: 0.77rem;
+  color: var(--text-muted);
+}
+
+.footer-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+
+/* ================================================================
+   14. ANIMACIONES Y KEYFRAMES
+================================================================ */
+
+/* Entrada de tarjetas — de abajo hacia arriba con fade */
+@keyframes anim-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Rotación del spinner del botón */
+@keyframes anim-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ================================================================
+   15. RESPONSIVE — BREAKPOINTS
+================================================================ */
+
+/* ── Pantallas menores a 1024px ─────────────────── */
+@media (max-width: 1024px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .col-results {
+    grid-template-columns: 1fr 1fr;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .col-results > .card {
+    flex: 1;
+    min-width: 280px;
+  }
+}
+
+/* ── Pantallas menores a 768px (tablet) ─────────── */
+@media (max-width: 768px) {
+  .app-wrapper {
+    padding: 0 16px;
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .method-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-hero {
+    padding: 36px 0 24px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .col-results {
+    flex-direction: column;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .export-panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── Pantallas menores a 480px (móvil pequeño) ──── */
+@media (max-width: 480px) {
+  .hero-title__main { font-size: 1.6rem; }
+  .hero-title__sub  { font-size: 1.4rem; }
+
+  .card { padding: var(--space-md); }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn--primary,
+  .btn--secondary {
+    width: 100%;
+  }
+
+  .toast {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}

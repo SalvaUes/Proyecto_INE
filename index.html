@@ -1,28 +1,931 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEAE - Sistema de Evaluación de Alternativas Económicas</title>
-    <link rel="stylesheet" href="css/style.css">
-    
-    </head>
 
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║   SEAE — Sistema de Evaluación de Alternativas Económicas   ║
+  ║   Archivo : index.html                                       ║
+  ║   Rol     : Estructura y marcado semántico (Dev Frontend)    ║
+  ║   Enlaza  : styles.css  →  script.js                         ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEAE — Sistema de Evaluación de Alternativas Económicas</title>
+
+  <!-- ── Google Fonts ─────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ── Hoja de estilos principal ───────────────────────────── -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
 <body>
-    <div id="app">
-        <h1>Sistema de Evaluación de Alternativas Económicas</h1>
+
+  <!-- ════════════════════════════════════════════════════════════
+       CONTENEDOR RAÍZ — Todo el layout vive dentro de .app-wrapper
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="app-wrapper">
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECCIÓN: HEADER / BARRA DE NAVEGACIÓN SUPERIOR
+         Contiene: logo de marca + tabs de método
+    ═══════════════════════════════════════════════════════════════ -->
+    <header id="site-header" class="site-header">
+
+      <!-- Logo / Identidad de marca -->
+      <div class="header-brand">
+        <div class="brand-icon" aria-hidden="true">📊</div>
+        <div class="brand-info">
+          <span class="brand-name">SE<span class="brand-accent">AE</span></span>
+          <span class="brand-tagline">Sistema de Evaluación de Alternativas Económicas</span>
+        </div>
+      </div>
+
+      <!-- ── Navegación de métodos ──────────────────────────────
+           ID usado por JS: #nav-metodos
+           Cada botón tiene data-method="vpn|cae|tir"
+           JS agrega/quita clase .tab--active según selección
+      ─────────────────────────────────────────────────────────── -->
+      <nav id="nav-metodos" class="method-nav" role="tablist" aria-label="Método de evaluación">
+
+        <button
+          id="tab-vpn"
+          class="nav-tab tab--active"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-resultados"
+          data-method="vpn"
+        >
+          VPN
+        </button>
+
+        <button
+          id="tab-cae"
+          class="nav-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-resultados"
+          data-method="cae"
+        >
+          CAE
+        </button>
+
+        <button
+          id="tab-tir"
+          class="nav-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-resultados"
+          data-method="tir"
+        >
+          TIR
+        </button>
+
+      </nav>
+    </header>
+    <!-- /site-header -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECCIÓN: HERO — Título principal de la vista
+         Contiene: badge de método activo + título + descripción
+         IDs que JS actualiza:
+           #hero-method-badge  → nombre corto del método activo
+           #hero-title-main    → título principal (blanco)
+           #hero-title-sub     → subtítulo con degradado
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="section-hero" class="section-hero" aria-labelledby="hero-title-main">
+
+      <div class="hero-left">
+
+        <!-- Badge de método activo -->
+        <div id="hero-method-badge" class="hero-badge" aria-live="polite">
+          <span class="hero-badge__dot" aria-hidden="true">●</span>
+          <span id="hero-badge-label">Valor Presente Neto</span>
         </div>
 
-        
-    <script src="js/calculos.js"></script>
-    <script src="js/interfaz.js"></script>
-    <script src="js/reporte.js"></script>
+        <!-- Título principal -->
+        <h1 class="hero-title">
+          <span id="hero-title-main" class="hero-title__main">
+            Evaluación de
+          </span>
+          <!-- Línea con degradado -->
+          <span id="hero-title-sub" class="hero-title__sub">
+            Alternativas Económicas
+          </span>
+        </h1>
 
+      </div>
+
+      <!-- Descripción / subtexto -->
+      <p id="hero-description" class="hero-desc">
+        Ingresa los parámetros de cada alternativa. El sistema calculará
+        automáticamente los indicadores financieros y generará la
+        comparación y el reporte exportable.
+      </p>
+
+    </section>
+    <!-- /section-hero -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECCIÓN: GRID PRINCIPAL
+         Layout: 2 columnas (Formulario Izquierda | Resultados Derecha)
+    ═══════════════════════════════════════════════════════════════ -->
+    <main id="main-grid" class="main-grid">
+
+
+      <!-- ════════════════════════════════════════════════════════
+           COLUMNA IZQUIERDA — Formularios de ingreso de datos
+      ═════════════════════════════════════════════════════════════ -->
+      <div class="col-forms">
+
+
+        <!-- ────────────────────────────────────────────────────
+             TARJETA: ALTERNATIVA A
+             ID de la tarjeta : #card-alt-a
+             Todos los inputs siguen el patrón: #alt-a-{campo}
+        ─────────────────────────────────────────────────────── -->
+        <article id="card-alt-a" class="card card--green" aria-labelledby="alt-a-title">
+
+          <!-- Encabezado de tarjeta -->
+          <div class="card-header">
+            <div class="card-icon card-icon--green" aria-hidden="true">🏗️</div>
+            <div class="card-header-info">
+              <h2 id="alt-a-title" class="card-title">Alternativa A</h2>
+              <p class="card-subtitle">Primer proyecto a comparar</p>
+            </div>
+          </div>
+          <!-- /card-header -->
+
+          <!-- ── Cuerpo del formulario ── -->
+          <form id="form-alt-a" class="card-form" novalidate autocomplete="off">
+
+            <!-- Campo: Nombre del proyecto -->
+            <div class="field-row field-row--full">
+              <div class="field-group">
+                <label class="field-label" for="alt-a-nombre">
+                  Nombre / descripción del proyecto
+                </label>
+                <input
+                  id="alt-a-nombre"
+                  name="alt_a_nombre"
+                  class="field-input"
+                  type="text"
+                  placeholder="Ej: Compra de maquinaria nueva"
+                />
+              </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <!-- Fila: Inversión inicial + Vida del proyecto -->
+            <div class="field-row">
+
+              <div class="field-group">
+                <label class="field-label" for="alt-a-inversion">
+                  Inversión / Costo inicial
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-a-inversion"
+                  name="alt_a_inversion"
+                  class="field-input field-input--required"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  aria-required="true"
+                />
+                <span class="field-error" aria-live="polite">Campo requerido</span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="alt-a-vida">
+                  Vida del proyecto
+                  <span class="field-unit">años</span>
+                </label>
+                <input
+                  id="alt-a-vida"
+                  name="alt_a_vida"
+                  class="field-input field-input--required"
+                  type="number"
+                  placeholder="0"
+                  min="1"
+                  step="1"
+                  aria-required="true"
+                />
+                <span class="field-error" aria-live="polite">Campo requerido</span>
+              </div>
+
+            </div>
+            <!-- /field-row -->
+
+            <!-- Fila: Tasa de descuento + Valor de salvamento -->
+            <div class="field-row">
+
+              <div class="field-group">
+                <label class="field-label" for="alt-a-tasa">
+                  Tasa de descuento (TMAR)
+                  <span class="field-unit">%</span>
+                </label>
+                <input
+                  id="alt-a-tasa"
+                  name="alt_a_tasa"
+                  class="field-input field-input--required"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  aria-required="true"
+                />
+                <span class="field-error" aria-live="polite">Campo requerido</span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="alt-a-salvamento">
+                  Valor de salvamento
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-a-salvamento"
+                  name="alt_a_salvamento"
+                  class="field-input"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+            </div>
+
+            <!-- Fila: Ingresos anuales + Costos de operación -->
+            <div class="field-row">
+
+              <div class="field-group">
+                <label class="field-label" for="alt-a-ingresos">
+                  Ingresos anuales
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-a-ingresos"
+                  name="alt_a_ingresos"
+                  class="field-input"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="alt-a-costos-op">
+                  Costos de operación anuales
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-a-costos-op"
+                  name="alt_a_costos_op"
+                  class="field-input"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+            </div>
+
+            <!-- Campo: Flujos manuales (opcional) -->
+            <div class="field-row field-row--full">
+              <div class="field-group">
+                <label class="field-label" for="alt-a-flujos">
+                  Flujos netos por período (separados por coma)
+                  <span class="field-unit">opcional</span>
+                </label>
+                <input
+                  id="alt-a-flujos"
+                  name="alt_a_flujos"
+                  class="field-input"
+                  type="text"
+                  placeholder="Ej: 5000, 6000, 7500, 8000, 9000"
+                />
+              </div>
+            </div>
+
+          </form>
+          <!-- /form-alt-a -->
+
+        </article>
+        <!-- /card-alt-a -->
+
+
+        <!-- ────────────────────────────────────────────────────
+             TARJETA: ALTERNATIVA B
+             ID de la tarjeta : #card-alt-b
+             Todos los inputs siguen el patrón: #alt-b-{campo}
+        ─────────────────────────────────────────────────────── -->
+        <article id="card-alt-b" class="card card--blue" aria-labelledby="alt-b-title">
+
+          <div class="card-header">
+            <div class="card-icon card-icon--blue" aria-hidden="true">🏢</div>
+            <div class="card-header-info">
+              <h2 id="alt-b-title" class="card-title">Alternativa B</h2>
+              <p class="card-subtitle">Segundo proyecto a comparar</p>
+            </div>
+          </div>
+
+          <form id="form-alt-b" class="card-form" novalidate autocomplete="off">
+
+            <div class="field-row field-row--full">
+              <div class="field-group">
+                <label class="field-label" for="alt-b-nombre">
+                  Nombre / descripción del proyecto
+                </label>
+                <input
+                  id="alt-b-nombre"
+                  name="alt_b_nombre"
+                  class="field-input"
+                  type="text"
+                  placeholder="Ej: Arrendamiento de equipo"
+                />
+              </div>
+            </div>
+
+            <div class="field-divider"></div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="alt-b-inversion">
+                  Inversión / Costo inicial
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-b-inversion"
+                  name="alt_b_inversion"
+                  class="field-input field-input--required"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  aria-required="true"
+                />
+                <span class="field-error" aria-live="polite">Campo requerido</span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="alt-b-vida">
+                  Vida del proyecto
+                  <span class="field-unit">años</span>
+                </label>
+                <input
+                  id="alt-b-vida"
+                  name="alt_b_vida"
+                  class="field-input field-input--required"
+                  type="number"
+                  placeholder="0"
+                  min="1"
+                  step="1"
+                  aria-required="true"
+                />
+                <span class="field-error" aria-live="polite">Campo requerido</span>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="alt-b-tasa">
+                  Tasa de descuento (TMAR)
+                  <span class="field-unit">%</span>
+                </label>
+                <input
+                  id="alt-b-tasa"
+                  name="alt_b_tasa"
+                  class="field-input field-input--required"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  aria-required="true"
+                />
+                <span class="field-error" aria-live="polite">Campo requerido</span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="alt-b-salvamento">
+                  Valor de salvamento
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-b-salvamento"
+                  name="alt_b_salvamento"
+                  class="field-input"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="alt-b-ingresos">
+                  Ingresos anuales
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-b-ingresos"
+                  name="alt_b_ingresos"
+                  class="field-input"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="alt-b-costos-op">
+                  Costos de operación anuales
+                  <span class="field-unit">$</span>
+                </label>
+                <input
+                  id="alt-b-costos-op"
+                  name="alt_b_costos_op"
+                  class="field-input"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </div>
+
+            <div class="field-row field-row--full">
+              <div class="field-group">
+                <label class="field-label" for="alt-b-flujos">
+                  Flujos netos por período (separados por coma)
+                  <span class="field-unit">opcional</span>
+                </label>
+                <input
+                  id="alt-b-flujos"
+                  name="alt_b_flujos"
+                  class="field-input"
+                  type="text"
+                  placeholder="Ej: 4000, 5500, 6000, 7000, 8500"
+                />
+              </div>
+            </div>
+
+          </form>
+          <!-- /form-alt-b -->
+
+        </article>
+        <!-- /card-alt-b -->
+
+
+        <!-- ────────────────────────────────────────────────────
+             BLOQUE: BOTONES DE ACCIÓN PRINCIPALES
+             #btn-calcular → dispara el cálculo (script.js)
+             #btn-limpiar  → resetea todos los formularios
+        ─────────────────────────────────────────────────────── -->
+        <div id="action-buttons" class="action-buttons">
+
+          <!-- Botón primario — Calcular -->
+          <button
+            id="btn-calcular"
+            class="btn btn--primary"
+            type="button"
+            aria-label="Calcular resultados financieros"
+          >
+            <span class="btn__text">⚡ Calcular</span>
+            <!-- Spinner: JS agrega clase .btn--loading para mostrarlo -->
+            <span class="btn__spinner" aria-hidden="true" role="status"></span>
+          </button>
+
+          <!-- Botón secundario — Limpiar -->
+          <button
+            id="btn-limpiar"
+            class="btn btn--secondary"
+            type="button"
+            aria-label="Limpiar todos los campos del formulario"
+          >
+            🗑 Limpiar
+          </button>
+
+        </div>
+        <!-- /action-buttons -->
+
+
+      </div>
+      <!-- /col-forms -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           COLUMNA DERECHA — Panel de Resultados
+           IDs que JS rellena al calcular:
+             Alternativa A: #res-a-*
+             Alternativa B: #res-b-*
+      ═════════════════════════════════════════════════════════════ -->
+      <div id="panel-resultados" class="col-results" role="tabpanel" aria-label="Resultados del cálculo">
+
+
+        <!-- ────────────────────────────────────────────────────
+             TARJETA: RESULTADOS — ALTERNATIVA A
+             JS rellena: #res-a-nombre, #res-a-metodo-label,
+               #res-a-valor-principal, #res-a-interpretacion,
+               #res-a-vp-ingresos, #res-a-vp-costos,
+               #res-a-flujo-neto, #res-a-tir
+             JS agrega clase .badge--accept / .badge--reject a
+               #decision-a
+        ─────────────────────────────────────────────────────── -->
+        <article id="card-res-a" class="card card--green" aria-labelledby="res-a-title">
+
+          <div class="card-header">
+            <div class="card-icon card-icon--green" aria-hidden="true">📈</div>
+            <div class="card-header-info">
+              <h2 id="res-a-title" class="card-title">Resultados — Alt. A</h2>
+              <!-- JS escribe el nombre de la alternativa aquí -->
+              <p id="res-a-nombre" class="card-subtitle">—</p>
+            </div>
+          </div>
+
+          <!-- Estado vacío: visible antes de calcular -->
+          <!-- JS: ocultar con display:none cuando lleguen resultados -->
+          <div id="empty-res-a" class="empty-state" aria-live="polite">
+            <span class="empty-state__icon" aria-hidden="true">📊</span>
+            <p class="empty-state__text">
+              Ingresa los datos y presiona "Calcular" para ver los resultados.
+            </p>
+          </div>
+
+          <!-- Bloque de resultados: oculto por defecto -->
+          <!-- JS: cambiar a display:block al recibir resultados -->
+          <div id="resultados-a" class="results-body" style="display: none;">
+
+            <!-- Métrica principal (VPN / CAE / TIR según pestaña) -->
+            <div class="result-metric">
+              <span id="res-a-metodo-label" class="result-metric__label">VPN</span>
+              <span id="res-a-valor-principal" class="result-metric__value result-metric__value--green">
+                $0.00
+              </span>
+              <span id="res-a-interpretacion" class="result-metric__note">—</span>
+            </div>
+
+            <!-- Grid de métricas secundarias -->
+            <div class="metrics-grid">
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">VP Ingresos</span>
+                <span id="res-a-vp-ingresos" class="metric-chip__value">—</span>
+              </div>
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">VP Costos</span>
+                <span id="res-a-vp-costos" class="metric-chip__value">—</span>
+              </div>
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">Flujo Neto Total</span>
+                <span id="res-a-flujo-neto" class="metric-chip__value">—</span>
+              </div>
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">TIR Calculada</span>
+                <span id="res-a-tir" class="metric-chip__value">—</span>
+              </div>
+
+            </div>
+            <!-- /metrics-grid -->
+
+            <!-- Badge de decisión: ACEPTAR / RECHAZAR -->
+            <!-- JS agrega clase .badge--accept o .badge--reject -->
+            <div id="decision-a" class="decision-badge badge--neutral" role="status">
+              <span id="decision-a-icon" class="decision-badge__icon" aria-hidden="true">⏳</span>
+              <div class="decision-badge__text">
+                <strong id="decision-a-titulo" class="decision-badge__title">
+                  Pendiente de cálculo
+                </strong>
+                <span id="decision-a-sub" class="decision-badge__sub">—</span>
+              </div>
+            </div>
+
+          </div>
+          <!-- /resultados-a -->
+
+        </article>
+        <!-- /card-res-a -->
+
+
+        <!-- ────────────────────────────────────────────────────
+             TARJETA: RESULTADOS — ALTERNATIVA B
+             Misma estructura que Alt. A, IDs con sufijo "-b"
+        ─────────────────────────────────────────────────────── -->
+        <article id="card-res-b" class="card card--blue" aria-labelledby="res-b-title">
+
+          <div class="card-header">
+            <div class="card-icon card-icon--blue" aria-hidden="true">📉</div>
+            <div class="card-header-info">
+              <h2 id="res-b-title" class="card-title">Resultados — Alt. B</h2>
+              <p id="res-b-nombre" class="card-subtitle">—</p>
+            </div>
+          </div>
+
+          <div id="empty-res-b" class="empty-state" aria-live="polite">
+            <span class="empty-state__icon" aria-hidden="true">📊</span>
+            <p class="empty-state__text">
+              Ingresa los datos y presiona "Calcular" para ver los resultados.
+            </p>
+          </div>
+
+          <div id="resultados-b" class="results-body" style="display: none;">
+
+            <div class="result-metric">
+              <span id="res-b-metodo-label" class="result-metric__label">VPN</span>
+              <span id="res-b-valor-principal" class="result-metric__value result-metric__value--blue">
+                $0.00
+              </span>
+              <span id="res-b-interpretacion" class="result-metric__note">—</span>
+            </div>
+
+            <div class="metrics-grid">
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">VP Ingresos</span>
+                <span id="res-b-vp-ingresos" class="metric-chip__value">—</span>
+              </div>
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">VP Costos</span>
+                <span id="res-b-vp-costos" class="metric-chip__value">—</span>
+              </div>
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">Flujo Neto Total</span>
+                <span id="res-b-flujo-neto" class="metric-chip__value">—</span>
+              </div>
+
+              <div class="metric-chip">
+                <span class="metric-chip__label">TIR Calculada</span>
+                <span id="res-b-tir" class="metric-chip__value">—</span>
+              </div>
+
+            </div>
+
+            <div id="decision-b" class="decision-badge badge--neutral" role="status">
+              <span id="decision-b-icon" class="decision-badge__icon" aria-hidden="true">⏳</span>
+              <div class="decision-badge__text">
+                <strong id="decision-b-titulo" class="decision-badge__title">
+                  Pendiente de cálculo
+                </strong>
+                <span id="decision-b-sub" class="decision-badge__sub">—</span>
+              </div>
+            </div>
+
+          </div>
+          <!-- /resultados-b -->
+
+        </article>
+        <!-- /card-res-b -->
+
+
+      </div>
+      <!-- /col-results -->
+
+
+    </main>
+    <!-- /main-grid -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECCIÓN: COMPARACIÓN DE ALTERNATIVAS
+         Fila completa (ancho total) debajo del grid.
+         JS rellena todos los #comp-* y ajusta las barras.
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="section-comparacion" class="section-full" aria-labelledby="comp-title">
+
+      <article id="card-comparacion" class="card card--purple" aria-labelledby="comp-title">
+
+        <div class="card-header">
+          <div class="card-icon card-icon--purple" aria-hidden="true">⚖️</div>
+          <div class="card-header-info">
+            <h2 id="comp-title" class="card-title">Comparación de Alternativas</h2>
+            <p class="card-subtitle">Análisis lado a lado con criterios de aceptación</p>
+          </div>
+        </div>
+
+        <!-- ── Barra visual proporcional ──────────────────────
+             JS ajusta: style="width: XX%" en #bar-fill-a y #bar-fill-b
+             JS escribe: #bar-pct-a, #bar-pct-b, #comp-bar-label-a, #comp-bar-label-b
+        ─────────────────────────────────────────────────────── -->
+        <div class="compare-bar-container">
+
+          <div class="compare-bar-labels">
+            <span id="comp-bar-label-a" class="compare-bar-labels__a">Alternativa A</span>
+            <span id="comp-bar-label-b" class="compare-bar-labels__b">Alternativa B</span>
+          </div>
+
+          <div class="compare-bar-track" role="progressbar" aria-label="Comparación proporcional">
+            <div id="bar-fill-a" class="compare-bar-fill compare-bar-fill--a" style="width: 50%;"></div>
+            <div id="bar-fill-b" class="compare-bar-fill compare-bar-fill--b" style="width: 50%;"></div>
+          </div>
+
+          <div class="compare-bar-pct">
+            <span id="bar-pct-a" class="compare-bar-pct__a">50%</span>
+            <span id="bar-pct-b" class="compare-bar-pct__b">50%</span>
+          </div>
+
+        </div>
+        <!-- /compare-bar-container -->
+
+        <!-- ── Tabla comparativa ──────────────────────────────
+             JS rellena todas las celdas con id="comp-{metrica}-{alt}"
+             JS agrega clase .row--winner a la fila del método activo
+        ─────────────────────────────────────────────────────── -->
+        <div class="table-wrapper">
+          <table id="tabla-comparacion" class="compare-table" aria-label="Tabla comparativa de alternativas">
+
+            <thead>
+              <tr>
+                <th scope="col">Criterio</th>
+                <th scope="col">Alternativa A</th>
+                <th scope="col">Alternativa B</th>
+                <th scope="col">Mejor opción</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabla-comparacion-body">
+
+              <tr id="fila-vpn">
+                <td class="td-label">VPN</td>
+                <td id="comp-vpn-a"      class="td-a">—</td>
+                <td id="comp-vpn-b"      class="td-b">—</td>
+                <td id="comp-vpn-winner"           >—</td>
+              </tr>
+
+              <tr id="fila-cae">
+                <td class="td-label">CAE</td>
+                <td id="comp-cae-a"      class="td-a">—</td>
+                <td id="comp-cae-b"      class="td-b">—</td>
+                <td id="comp-cae-winner"           >—</td>
+              </tr>
+
+              <tr id="fila-tir">
+                <td class="td-label">TIR</td>
+                <td id="comp-tir-a"      class="td-a">—</td>
+                <td id="comp-tir-b"      class="td-b">—</td>
+                <td id="comp-tir-winner"           >—</td>
+              </tr>
+
+              <tr id="fila-inversion">
+                <td class="td-label">Inversión inicial</td>
+                <td id="comp-inv-a"      class="td-a">—</td>
+                <td id="comp-inv-b"      class="td-b">—</td>
+                <td id="comp-inv-winner"           >—</td>
+              </tr>
+
+              <tr id="fila-vida">
+                <td class="td-label">Vida útil</td>
+                <td id="comp-vida-a"     class="td-a">—</td>
+                <td id="comp-vida-b"     class="td-b">—</td>
+                <td id="comp-vida-winner"          >—</td>
+              </tr>
+
+              <tr id="fila-decision">
+                <td class="td-label">Decisión</td>
+                <td id="comp-dec-a"      class="td-a">—</td>
+                <td id="comp-dec-b"      class="td-b">—</td>
+                <td id="comp-dec-winner"           >—</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+        <!-- /table-wrapper -->
+
+      </article>
+
+    </section>
+    <!-- /section-comparacion -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         SECCIÓN: GENERACIÓN DE REPORTE / EXPORTACIÓN
+         IDs de botones: #btn-export-pdf, #btn-export-xlsx, #btn-export-txt
+         data-export-type="pdf|xlsx|txt" — JS escucha este atributo
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="section-exportar" class="section-full" aria-labelledby="exp-title">
+
+      <article id="card-exportar" class="card card--amber" aria-labelledby="exp-title">
+
+        <div class="card-header">
+          <div class="card-icon card-icon--amber" aria-hidden="true">📄</div>
+          <div class="card-header-info">
+            <h2 id="exp-title" class="card-title">Generación de Reporte</h2>
+            <p class="card-subtitle">
+              Exporta los resultados del análisis en el formato de tu preferencia
+            </p>
+          </div>
+        </div>
+
+        <div class="export-panel">
+
+          <!-- Info del reporte -->
+          <div class="export-info">
+            <p class="export-info__title">Reporte de Evaluación Económica</p>
+            <p class="export-info__desc">
+              El reporte incluirá: datos de entrada, cálculos detallados,
+              comparación de alternativas y la recomendación final.
+            </p>
+          </div>
+
+          <!-- Botones de formato -->
+          <div class="export-btn-group">
+
+            <button
+              id="btn-export-pdf"
+              class="btn btn--export"
+              type="button"
+              data-export-type="pdf"
+              aria-label="Exportar reporte como PDF"
+            >
+              📑 PDF
+            </button>
+
+            <button
+              id="btn-export-xlsx"
+              class="btn btn--export"
+              type="button"
+              data-export-type="xlsx"
+              aria-label="Exportar reporte como Excel"
+            >
+              📊 Excel
+            </button>
+
+            <button
+              id="btn-export-txt"
+              class="btn btn--export"
+              type="button"
+              data-export-type="txt"
+              aria-label="Exportar reporte como texto plano"
+            >
+              📝 TXT
+            </button>
+
+          </div>
+          <!-- /export-btn-group -->
+
+        </div>
+        <!-- /export-panel -->
+
+      </article>
+
+    </section>
+    <!-- /section-exportar -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════════════════════════ -->
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+      <span>
+        <strong class="footer-brand">SEAE</strong>
+        — Sistema de Evaluación de Alternativas Económicas
+      </span>
+      <span>Proyecto Ciclo · Ingeniería de Negocios · 2026</span>
+    </footer>
+
+
+  </div>
+  <!-- /app-wrapper -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       TOAST — Notificación flotante de éxito / error
+       JS: window.showToast(mensaje, esError)
+       JS agrega/quita clase .toast--show para animarlo
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="toast" class="toast" role="alert" aria-live="polite" aria-atomic="true">
+    <span id="toast-icon" class="toast__icon" aria-hidden="true">✅</span>
+    <span id="toast-msg"  class="toast__msg">Operación completada.</span>
+  </div>
+
+
+  <!-- ── Motor de cálculo JS (al final del body para mejor rendimiento) ── -->
+  <script src="script.js"></script>
 
 </body>
-
-
-
-
 </html>
