@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEAE - Sistema de Evaluación de Alternativas Económicas</title>
-    <link rel="stylesheet" href="css/style.css">
-    
-    </head>
 
+    <!-- CSS -->
+    <link rel="stylesheet" href="CSS/style.css">
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
 
 <body>
+
     <div id="app">
         <h1>Sistema de Evaluación de Alternativas Económicas</h1>
-        </div>
 
-        
+        <h2>Resultados</h2>
+
+        <p>VPN: <span id="vpn">1500</span></p>
+        <p>TIR: <span id="tir">18%</span></p>
+        <p>CAE: <span id="cae">320</span></p>
+
+        <button onclick="generarPDF()">Descargar Reporte PDF</button>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/calculos.js"></script>
     <script src="js/interfaz.js"></script>
     <script src="js/reporte.js"></script>
 
-
 </body>
-
-
-
-
 </html>
