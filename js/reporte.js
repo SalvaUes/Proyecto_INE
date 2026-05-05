@@ -1,32 +1,29 @@
-/* ==========================================================================
-   DEV 4 (El Arquitecto del PDF): 
-   Tu trabajo es tomar los resultados finales que están en la pantalla y 
-   convertirlos en un PDF elegante. Usarás un boton para disparar esta accion.
-   ========================================================================== */
+const { jsPDF } = window.jspdf;
 
-// Nota: Para que esto funcione, en el index.html agregaremos una libreria como html2pdf.js
+function generarPDF() {
 
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // Capturas el boton que el DEV 1 diseño para exportar
-    // const btnReporte = document.getElementById('btnGenerarReporte');
+   const doc = new jsPDF();
 
-    /*
-    btnReporte.addEventListener('click', function() {
-        // 1. Seleccionas el area del HTML que quieres convertir en PDF
-        const elementoAExportar = document.getElementById('areaDeResultados');
+    // LOGO
+    doc.addImage("logo_ues.png", "PNG", 150, 10, 40, 20);
 
-        // 2. Configuraciones de tu PDF (Márgenes, nombre del archivo, etc)
-        var opciones = {
-            margin:       1,
-            filename:     'Reporte_Alternativas_Economicas.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
+    doc.text("Universidad de El Salvador", 20, 20);
 
-        // 3. Magia: Generar y descargar
-        // html2pdf().set(opciones).from(elementoAExportar).save();
-    });
-    */
-});
+    doc.save("reporte.pdf");
+
+    const vpn = document.getElementById("vpn").textContent;
+    const tir = document.getElementById("tir").textContent;
+    const cae = document.getElementById("cae").textContent;
+
+    doc.setFontSize(16);
+    doc.text("Universidad de El Salvador", 20, 20);
+    doc.text("Reporte SEAE", 20, 30);
+
+    doc.setFontSize(12);
+    doc.text("Resultados:", 20, 50);
+    doc.text("VPN: " + vpn, 20, 65);
+    doc.text("TIR: " + tir, 20, 75);
+    doc.text("CAE: " + cae, 20, 85);
+
+    doc.save("Reporte_SEAE.pdf");
+}
