@@ -1,32 +1,95 @@
-/* ==========================================================================
-   DEV 4 (El Arquitecto del PDF): 
-   Tu trabajo es tomar los resultados finales que están en la pantalla y 
-   convertirlos en un PDF elegante. Usarás un boton para disparar esta accion.
-   ========================================================================== */
+const { jsPDF } = window.jspdf || {};
 
-// Nota: Para que esto funcione, en el index.html agregaremos una libreria como html2pdf.js
+async function generarPDF() {
+    if (!window.jspdf) {
+        console.error('jsPDF no está disponible. Asegúrate de incluir la librería antes de este script.');
+        return;
+    }
 
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // Capturas el boton que el DEV 1 diseño para exportar
-    // const btnReporte = document.getElementById('btnGenerarReporte');
+    const doc = new jsPDF();
 
-    /*
-    btnReporte.addEventListener('click', function() {
-        // 1. Seleccionas el area del HTML que quieres convertir en PDF
-        const elementoAExportar = document.getElementById('areaDeResultados');
+    // Obtener y sanear VPN
+    const vpnEl = document.getElementById("vpn");
+    const vpn = vpnEl ? vpnEl.textContent.trim() : '';
+    const vpnNum = parseFloat(vpn.toString().replace(/\s+/g, '').replace(',', '.')) || 0;
 
-        // 2. Configuraciones de tu PDF (Márgenes, nombre del archivo, etc)
-        var opciones = {
-            margin:       1,
-            filename:     'Reporte_Alternativas_Economicas.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
+    // Cargar logo como dataURL (misma origen recomendado)
+    try {
+        const resp = await fetch('logo_ues.png');
+        if (resp.ok) {
+            const blob = await resp.blob();
+            const reader = new FileReader();
+            const imgData = await new Promise((resolve, reject) => {
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+            doc.addImage(imgData, 'PNG', 10, 10, 25, 25);
+        } else {
+            console.warn('No se pudo cargar logo_ues.png:', resp.status);
+        }
+    } catch (err) {
+        console.warn('Error cargando logo:', err);
+    }
 
-        // 3. Magia: Generar y descargar
-        // html2pdf().set(opciones).from(elementoAExportar).save();
-    });
-    */
+    // 🏷️ TÍTULO
+    doc.setFontSize(18);
+    doc.setTextColor(0, 51, 102);
+    doc.text("Sistema de Evaluación de Alternativas Económicas", 40, 20);
+
+    doc.setFontSize(12);
+    doc.text("Universidad de El Salvador", 40, 28);
+
+    // Línea
+    doc.setDrawColor(0, 51, 102);
+    doc.line(10, 40, 200, 40);
+
+    // 📊 RESULTADOS
+    doc.setFontSize(14);
+    doc.text("Resultados del Análisis (VPN)", 10, 55);
+
+    doc.setFontSize(12);
+    doc.text("Valor Presente Neto:", 10, 70);
+
+    // 💰 VALOR GRANDE
+    doc.setFontSize(20);
+    doc.setTextColor(0, 102, 204);
+    doc.text("$ " + vpn, 10, 85);
+
+    // 📌 INTERPRETACIÓN
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Interpretación:", 10, 105);
+
+    if (vpnNum > 0) {
+        doc.text("El proyecto es viable (VPN positivo).", 10, 115);
+    } else {
+        doc.text("El proyecto no es viable.", 10, 115);
+    }
+
+    // 📅 FECHA
+    const fecha = new Date().toLocaleDateString();
+    doc.text("Fecha: " + fecha, 10, 140);
+
+    // 📎 FOOTER
+    doc.setFontSize(10);
+    doc.text("SEAE - Reporte generado automáticamente", 10, 280);
+
+    // 📥 DESCARGA
+    doc.save("Reporte_SEAE.pdf");
+}
+
+// Vincular botón de descarga (si existe). Busca varios ids por compatibilidad.
+document.addEventListener('DOMContentLoaded', () => {
+    const candidates = ['btnDescargar', 'btnDescargaPDF', 'btnGenerarPDF', 'generarPDF'];
+    let btn = null;
+    for (const id of candidates) {
+        btn = document.getElementById(id);
+        if (btn) break;
+    }
+    if (btn) {
+        btn.addEventListener('click', () => {
+            generarPDF().catch(err => console.error('Error generando PDF:', err));
+        });
+    }
 });
