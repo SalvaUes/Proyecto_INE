@@ -1,95 +1,274 @@
+/* ==========================================================================
+   REPORTE - Generador de PDF con jsPDF
+   Extrae los resultados calculados y genera un reporte profesional
+   ========================================================================== */
+
 const { jsPDF } = window.jspdf || {};
+
+function cargarImagenComoDataUrl(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                resolve(canvas.toDataURL('image/png'));
+            } catch (error) {
+                reject(error);
+            }
+        };
+        img.onerror = () => reject(new Error(`No se pudo cargar ${src}`));
+        img.src = src;
+    });
+}
 
 async function generarPDF() {
     if (!window.jspdf) {
-        console.error('jsPDF no está disponible. Asegúrate de incluir la librería antes de este script.');
+        alert('❌ jsPDF no está disponible. Intenta de nuevo.');
+        console.error('jsPDF no cargó correctamente');
         return;
     }
 
-    const doc = new jsPDF();
-
-    // Obtener y sanear VPN
-    const vpnEl = document.getElementById("vpn");
-    const vpn = vpnEl ? vpnEl.textContent.trim() : '';
-    const vpnNum = parseFloat(vpn.toString().replace(/\s+/g, '').replace(',', '.')) || 0;
-
-    // Cargar logo como dataURL (misma origen recomendado)
     try {
-        const resp = await fetch('logo_ues.png');
-        if (resp.ok) {
-            const blob = await resp.blob();
-            const reader = new FileReader();
-            const imgData = await new Promise((resolve, reject) => {
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-            doc.addImage(imgData, 'PNG', 10, 10, 25, 25);
-        } else {
-            console.warn('No se pudo cargar logo_ues.png:', resp.status);
+        // Obtener datos de los spans en el HTML
+        const vpnEl = document.getElementById("vpn");
+        const tirEl = document.getElementById("tir");
+        const caeEl = document.getElementById("cae");
+        const inversionEl = document.getElementById("inversionInicial");
+        const tasaEl = document.getElementById("tasaDescuento");
+
+        const vpn = vpnEl ? vpnEl.textContent : '0.00';
+        const tir = tirEl ? tirEl.textContent : '0.00';
+        const cae = caeEl ? caeEl.textContent : '0.00';
+        const inversion = inversionEl ? inversionEl.value : '0';
+        const tasa = tasaEl ? tasaEl.value : '0';
+
+        // Crear documento PDF
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'letter'
+        });
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        let yPosition = 15;
+
+        // Intentar cargar el logo real de la UES
+        let logoDataUrl = null;
+        const rutasLogo = ['logo_ues.png.png', 'logo_ues.png'];
+
+        for (const ruta of rutasLogo) {
+            try {
+                logoDataUrl = await cargarImagenComoDataUrl(ruta);
+                break;
+            } catch (error) {
+                console.warn(error.message);
+            }
         }
-    } catch (err) {
-        console.warn('Error cargando logo:', err);
+
+        // ═══════════════════════════════════════════════════════════════
+        // HEADER
+        // ═══════════════════════════════════════════════════════════════
+        doc.setFillColor(0, 51, 102); // Azul UES
+        doc.rect(0, 0, pageWidth, 35, 'F');
+
+        if (logoDataUrl) {
+            doc.addImage(logoDataUrl, 'PNG', 155, 6, 22, 22);
+        }
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('SEAE', 15, 18);
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Sistema de Evaluación de Alternativas Económicas', 15, 25);
+        doc.text('Universidad de El Salvador', 15, 31);
+
+        yPosition = 45;
+
+        // ═══════════════════════════════════════════════════════════════
+        // DATOS DE ENTRADA
+        // ═══════════════════════════════════════════════════════════════
+        doc.setTextColor(0, 51, 102);
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('DATOS DE ENTRADA', 15, yPosition);
+        yPosition += 8;
+
+        doc.setDrawColor(0, 51, 102);
+        doc.setLineWidth(0.5);
+        doc.line(15, yPosition - 2, pageWidth - 15, yPosition - 2);
+
+        doc.setTextColor(30, 41, 59);
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'normal');
+
+        yPosition += 6;
+        doc.text(`Inversión Inicial: $${inversion}`, 15, yPosition);
+        yPosition += 6;
+        doc.text(`Tasa de Descuento: ${tasa}%`, 15, yPosition);
+
+        yPosition += 12;
+
+        // ═══════════════════════════════════════════════════════════════
+        // RESULTADOS
+        // ═══════════════════════════════════════════════════════════════
+        doc.setTextColor(0, 51, 102);
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('RESULTADOS DEL ANÁLISIS', 15, yPosition);
+        yPosition += 8;
+
+        doc.setLineWidth(0.5);
+        doc.line(15, yPosition - 2, pageWidth - 15, yPosition - 2);
+
+        yPosition += 8;
+
+        // ─────────────────────────────────────────────────────────────
+        // VPN
+        // ─────────────────────────────────────────────────────────────
+        doc.setFillColor(220, 230, 250); // Azul claro
+        doc.rect(15, yPosition - 6, pageWidth - 30, 20, 'F');
+
+        doc.setTextColor(0, 51, 102);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Valor Presente Neto (VPN)', 18, yPosition);
+
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`$${vpn}`, 18, yPosition + 8);
+
+        // Interpretación
+        const vpnNum = parseFloat(vpn.replace(/[^0-9.-]/g, ''));
+        const vpnInterpretacion = vpnNum > 0
+            ? 'El proyecto es viable (VPN positivo)'
+            : 'El proyecto no es viable (VPN negativo)';
+
+        // Sanitizar cadena para evitar caracteres extraños en el PDF
+        function sanitizarTexto(str) {
+            if (typeof str !== 'string') return '';
+            // Eliminar ampersands introducidos por procesados extraños
+            let s = str.replace(/&+/g, '');
+            // Eliminar caracteres de control no imprimibles
+            s = s.replace(/[\x00-\x1F\x7F]/g, '');
+            // Limitar a caracteres visibles y acentos comunes
+            s = s.replace(/[^\w\s\-.,;:%()¿?¡!ñÑáéíóúÁÉÍÓÚÇç]/g, '');
+            return s.trim();
+        }
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text(sanitizarTexto(vpnInterpretacion), 18, yPosition + 14);
+
+        yPosition += 28;
+
+        // ─────────────────────────────────────────────────────────────
+        // TIR
+        // ─────────────────────────────────────────────────────────────
+        doc.setFillColor(254, 244, 220); // Ámbar claro
+        doc.rect(15, yPosition - 6, pageWidth - 30, 20, 'F');
+
+        doc.setTextColor(245, 158, 11);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Tasa Interna de Retorno (TIR)', 18, yPosition);
+
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${tir}%`, 18, yPosition + 8);
+
+        const tirNum = parseFloat(tir);
+        const tasaNum = parseFloat(tasa);
+        const tirInterpretacion = tirNum > tasaNum
+            ? `Rentable (TIR ${tirNum.toFixed(2)}% > Tasa ${tasaNum}%)`
+            : `No rentable (TIR ${tirNum.toFixed(2)}% <= Tasa ${tasaNum}%)`;
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text(sanitizarTexto(tirInterpretacion), 18, yPosition + 14);
+
+        yPosition += 28;
+
+        // ─────────────────────────────────────────────────────────────
+        // CAE
+        // ─────────────────────────────────────────────────────────────
+        doc.setFillColor(220, 250, 240); // Verde claro
+        doc.rect(15, yPosition - 6, pageWidth - 30, 20, 'F');
+
+        doc.setTextColor(16, 185, 129);
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'bold');
+        doc.text('Costo Anual Equivalente (CAE)', 18, yPosition);
+
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text(`$${cae}`, 18, yPosition + 8);
+
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text('Costo uniforme anual del proyecto', 18, yPosition + 14);
+
+        yPosition = pageHeight - 30;
+
+        // ═══════════════════════════════════════════════════════════════
+        // FOOTER
+        // ═══════════════════════════════════════════════════════════════
+        doc.setDrawColor(0, 51, 102);
+        doc.line(15, yPosition, pageWidth - 15, yPosition);
+
+        doc.setTextColor(100, 100, 100);
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+
+        const fecha = new Date().toLocaleDateString('es-SV');
+        const hora = new Date().toLocaleTimeString('es-SV');
+
+        doc.text(`Fecha: ${fecha} | Hora: ${hora}`, 15, yPosition + 6);
+        doc.text('SEAE © 2026 - Reporte generado automáticamente', 15, yPosition + 12);
+
+        // Número de página
+        doc.setFontSize(8);
+        doc.text(`Página ${doc.internal.pages.length - 1}`, pageWidth - 20, yPosition + 12);
+
+        // ═══════════════════════════════════════════════════════════════
+        // GUARDAR
+        // ═══════════════════════════════════════════════════════════════
+        const nombreArchivo = `SEAE_Reporte_${new Date().getTime()}.pdf`;
+        doc.save(nombreArchivo);
+
+        console.log('✅ PDF generado correctamente:', nombreArchivo);
+
+    } catch (error) {
+        console.error('❌ Error generando PDF:', error);
+        alert('❌ Error al generar el PDF. Verifica la consola para más detalles.');
     }
-
-    // 🏷️ TÍTULO
-    doc.setFontSize(18);
-    doc.setTextColor(0, 51, 102);
-    doc.text("Sistema de Evaluación de Alternativas Económicas", 40, 20);
-
-    doc.setFontSize(12);
-    doc.text("Universidad de El Salvador", 40, 28);
-
-    // Línea
-    doc.setDrawColor(0, 51, 102);
-    doc.line(10, 40, 200, 40);
-
-    // 📊 RESULTADOS
-    doc.setFontSize(14);
-    doc.text("Resultados del Análisis (VPN)", 10, 55);
-
-    doc.setFontSize(12);
-    doc.text("Valor Presente Neto:", 10, 70);
-
-    // 💰 VALOR GRANDE
-    doc.setFontSize(20);
-    doc.setTextColor(0, 102, 204);
-    doc.text("$ " + vpn, 10, 85);
-
-    // 📌 INTERPRETACIÓN
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Interpretación:", 10, 105);
-
-    if (vpnNum > 0) {
-        doc.text("El proyecto es viable (VPN positivo).", 10, 115);
-    } else {
-        doc.text("El proyecto no es viable.", 10, 115);
-    }
-
-    // 📅 FECHA
-    const fecha = new Date().toLocaleDateString();
-    doc.text("Fecha: " + fecha, 10, 140);
-
-    // 📎 FOOTER
-    doc.setFontSize(10);
-    doc.text("SEAE - Reporte generado automáticamente", 10, 280);
-
-    // 📥 DESCARGA
-    doc.save("Reporte_SEAE.pdf");
 }
 
-// Vincular botón de descarga (si existe). Busca varios ids por compatibilidad.
 document.addEventListener('DOMContentLoaded', () => {
-    const candidates = ['btnDescargar', 'btnDescargaPDF', 'btnGenerarPDF', 'generarPDF'];
-    let btn = null;
-    for (const id of candidates) {
-        btn = document.getElementById(id);
-        if (btn) break;
+    const botonDescarga = document.getElementById('btnDescargar');
+
+    if (!botonDescarga) {
+        console.warn('No se encontró el botón btnDescargar para vincular el PDF.');
+        return;
     }
-    if (btn) {
-        btn.addEventListener('click', () => {
-            generarPDF().catch(err => console.error('Error generando PDF:', err));
+
+    botonDescarga.type = 'button';
+    botonDescarga.addEventListener('click', () => {
+        generarPDF().catch(error => {
+            console.error('Error generando PDF:', error);
+            alert('❌ No se pudo generar el PDF. Revisa la consola para más detalles.');
         });
-    }
+    });
 });
