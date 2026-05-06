@@ -1,13 +1,36 @@
-const { jsPDF } = window.jspdf;
+const { jsPDF } = window.jspdf || {};
 
-function generarPDF() {
+async function generarPDF() {
+    if (!window.jspdf) {
+        console.error('jsPDF no está disponible. Asegúrate de incluir la librería antes de este script.');
+        return;
+    }
 
     const doc = new jsPDF();
 
-    const vpn = document.getElementById("vpn").textContent;
+    // Obtener y sanear VPN
+    const vpnEl = document.getElementById("vpn");
+    const vpn = vpnEl ? vpnEl.textContent.trim() : '';
+    const vpnNum = parseFloat(vpn.toString().replace(/\s+/g, '').replace(',', '.')) || 0;
 
-    // 🖼️ LOGO
-    doc.addImage("logo_ues.png", "PNG", 10, 10, 25, 25);
+    // Cargar logo como dataURL (misma origen recomendado)
+    try {
+        const resp = await fetch('logo_ues.png');
+        if (resp.ok) {
+            const blob = await resp.blob();
+            const reader = new FileReader();
+            const imgData = await new Promise((resolve, reject) => {
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+            doc.addImage(imgData, 'PNG', 10, 10, 25, 25);
+        } else {
+            console.warn('No se pudo cargar logo_ues.png:', resp.status);
+        }
+    } catch (err) {
+        console.warn('Error cargando logo:', err);
+    }
 
     // 🏷️ TÍTULO
     doc.setFontSize(18);
@@ -38,7 +61,7 @@ function generarPDF() {
     doc.setTextColor(0, 0, 0);
     doc.text("Interpretación:", 10, 105);
 
-    if (parseFloat(vpn) > 0) {
+    if (vpnNum > 0) {
         doc.text("El proyecto es viable (VPN positivo).", 10, 115);
     } else {
         doc.text("El proyecto no es viable.", 10, 115);
@@ -55,3 +78,18 @@ function generarPDF() {
     // 📥 DESCARGA
     doc.save("Reporte_SEAE.pdf");
 }
+
+// Vincular botón de descarga (si existe). Busca varios ids por compatibilidad.
+document.addEventListener('DOMContentLoaded', () => {
+    const candidates = ['btnDescargar', 'btnDescargaPDF', 'btnGenerarPDF', 'generarPDF'];
+    let btn = null;
+    for (const id of candidates) {
+        btn = document.getElementById(id);
+        if (btn) break;
+    }
+    if (btn) {
+        btn.addEventListener('click', () => {
+            generarPDF().catch(err => console.error('Error generando PDF:', err));
+        });
+    }
+});
