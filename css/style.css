@@ -1,29 +1,392 @@
 /* ==========================================================================
-   DEV 1 (Diseño Visual): 
-   Este es tu lienzo. Tu objetivo es que el sistema sea elegante y profesional.
-   Recuerda utilizar los colores de la UES o una paleta sobria.
+   SEAE - Sistema de Evaluación de Alternativas Económicas
+   DEV 1 (Diseño Visual) - Estilos profesionales y responsivos
    ========================================================================== */
 
-/* Reseteo basico para evitar margenes raros en diferentes navegadores */
+/* ────────────────────────────────────────────────────────────────────────
+   1. VARIABLES Y RESETEO GLOBAL
+   ──────────────────────────────────────────────────────────────────────── */
 
+:root {
+    /* Paleta de colores UES */
+    --primary: #003366;      /* Azul oscuro UES */
+    --primary-light: #1e5a96;
+    --secondary: #f59e0b;    /* Ámbar/Naranja */
+    --success: #10b981;      /* Verde */
+    --danger: #ef4444;       /* Rojo */
+    --warning: #f97316;      /* Naranja */
+    
+    /* Grises */
+    --bg-page: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-hover: #f1f5f9;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    
+    /* Espaciado */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
 }
 
 body {
-    background-color: #f4f7f6; /* Fondo gris claro */
-    color: #333; /* Texto oscuro para buena lectura */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                 'Ubuntu', 'Cantarell', sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.6;
 }
 
-/* Ejemplo: Estilo para tu contenedor principal */
+/* ────────────────────────────────────────────────────────────────────────
+   2. LAYOUT PRINCIPAL
+   ──────────────────────────────────────────────────────────────────────── */
+
 #app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 51, 102, 0.1);
+    margin-bottom: var(--spacing-2xl);
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -0.5px;
+}
+
+header .subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.container-main {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: var(--spacing-xl);
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+    flex: 1;
 }
 
-/* DEV 1: Continua creando clases para tus formularios, tarjetas, botones y tablas aqui abajo... */
+/* ────────────────────────────────────────────────────────────────────────
+   3. FORMULARIO
+   ──────────────────────────────────────────────────────────────────────── */
+
+.form-section {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: var(--spacing-xl);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border);
+}
+
+.form-section h2 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: var(--spacing-lg);
+    font-weight: 600;
+    border-bottom: 2px solid var(--secondary);
+    padding-bottom: var(--spacing-md);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--bg-page);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+}
+
+#flujosContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.flujo-input {
+    width: 100%;
+}
+
+#formCalculos {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   4. BOTONES
+   ──────────────────────────────────────────────────────────────────────── */
+
+.btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-success {
+    background-color: var(--success);
+    color: white;
+    flex: 1;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--text-secondary);
+    color: white;
+    flex: 1;
+}
+
+.btn-secondary:hover {
+    background-color: #475569;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   5. PANEL DE RESULTADOS
+   ──────────────────────────────────────────────────────────────────────── */
+
+.results-section {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: var(--spacing-xl);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.results-section h2 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: var(--spacing-lg);
+    font-weight: 600;
+    border-bottom: 2px solid var(--secondary);
+    padding-bottom: var(--spacing-md);
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    flex: 1;
+}
+
+.result-card {
+    padding: var(--spacing-lg);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.1) 100%);
+    border: 2px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.result-card.vpn {
+    border-left: 5px solid #3b82f6;
+}
+
+.result-card.tir {
+    border-left: 5px solid #f59e0b;
+}
+
+.result-card.cae {
+    border-left: 5px solid #10b981;
+}
+
+.result-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.result-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+    word-break: break-word;
+}
+
+.result-status {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 6px;
+    background-color: var(--bg-page);
+    text-align: center;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   6. BOTONES DE EXPORTACIÓN
+   ──────────────────────────────────────────────────────────────────────── */
+
+.export-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-top: auto;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   7. RESPONSIVE
+   ──────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .container-main {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg);
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    header {
+        padding: var(--spacing-lg) var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    #flujosContainer {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .export-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .result-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 14px;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    #flujosContainer {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
+    }
+
+    .form-section,
+    .results-section {
+        padding: var(--spacing-md);
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-card {
+    animation: fadeIn 0.3s ease-out;
+}

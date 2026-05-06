@@ -7,7 +7,7 @@
     <title>SEAE - Sistema de Evaluación de Alternativas Económicas</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -16,15 +16,69 @@
 <body>
 
     <div id="app">
-        <h1>Sistema de Evaluación de Alternativas Económicas</h1>
+        <header>
+            <h1>🏛️ SEAE - Sistema de Evaluación de Alternativas Económicas</h1>
+            <p class="subtitle">Universidad de El Salvador</p>
+        </header>
 
-        <h2>Resultados</h2>
+        <div class="container-main">
+            <!-- FORMULARIO DE ENTRADA -->
+            <section class="form-section">
+                <h2>Datos de Entrada</h2>
+                <form id="formCalculos">
+                    
+                    <div class="form-group">
+                        <label for="inversionInicial">Inversión Inicial ($)</label>
+                        <input type="number" id="inversionInicial" placeholder="Ej: 50000" value="50000" step="0.01">
+                    </div>
 
-        <p>VPN: <span id="vpn">1500</span></p>
-        <p>TIR: <span id="tir">18%</span></p>
-        <p>CAE: <span id="cae">320</span></p>
+                    <div class="form-group">
+                        <label for="tasaDescuento">Tasa de Descuento (%)</label>
+                        <input type="number" id="tasaDescuento" placeholder="Ej: 12" value="12" step="0.01">
+                    </div>
 
-        <button onclick="generarPDF()">Descargar Reporte PDF</button>
+                    <div class="form-group">
+                        <label>Flujos de Efectivo (años)</label>
+                        <div id="flujosContainer">
+                            <input type="number" class="flujo-input" placeholder="Año 1" value="15000" step="0.01">
+                            <input type="number" class="flujo-input" placeholder="Año 2" value="18000" step="0.01">
+                            <input type="number" class="flujo-input" placeholder="Año 3" value="20000" step="0.01">
+                        </div>
+                    </div>
+
+                    <button type="button" id="btnCalcular" class="btn btn-primary">Calcular</button>
+                </form>
+            </section>
+
+            <!-- PANEL DE RESULTADOS -->
+            <section class="results-section">
+                <h2>Resultados del Análisis</h2>
+                <div class="results-grid">
+                    <div class="result-card vpn">
+                        <div class="result-label">Valor Presente Neto (VPN)</div>
+                        <div class="result-value">$<span id="vpn">0.00</span></div>
+                        <div class="result-status" id="vpnStatus">—</div>
+                    </div>
+
+                    <div class="result-card tir">
+                        <div class="result-label">Tasa Interna de Retorno (TIR)</div>
+                        <div class="result-value"><span id="tir">0.00</span>%</div>
+                        <div class="result-status" id="tirStatus">—</div>
+                    </div>
+
+                    <div class="result-card cae">
+                        <div class="result-label">Costo Anual Equivalente (CAE)</div>
+                        <div class="result-value">$<span id="cae">0.00</span></div>
+                        <div class="result-status" id="caeStatus">—</div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button id="btnDescargar" class="btn btn-success">📥 Descargar Reporte PDF</button>
+                    <button id="btnLimpiar" class="btn btn-secondary">🔄 Limpiar Datos</button>
+                </div>
+            </section>
+        </div>
     </div>
 
     <!-- Scripts -->
