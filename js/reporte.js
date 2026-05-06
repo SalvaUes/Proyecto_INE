@@ -5,6 +5,28 @@
 
 const { jsPDF } = window.jspdf || {};
 
+function cargarImagenComoDataUrl(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                resolve(canvas.toDataURL('image/png'));
+            } catch (error) {
+                reject(error);
+            }
+        };
+        img.onerror = () => reject(new Error(`No se pudo cargar ${src}`));
+        img.src = src;
+    });
+}
+
 async function generarPDF() {
     if (!window.jspdf) {
         alert('❌ jsPDF no está disponible. Intenta de nuevo.');
@@ -37,19 +59,36 @@ async function generarPDF() {
         const pageHeight = doc.internal.pageSize.getHeight();
         let yPosition = 15;
 
+        // Intentar cargar el logo real de la UES
+        let logoDataUrl = null;
+        const rutasLogo = ['logo_ues.png.png', 'logo_ues.png'];
+
+        for (const ruta of rutasLogo) {
+            try {
+                logoDataUrl = await cargarImagenComoDataUrl(ruta);
+                break;
+            } catch (error) {
+                console.warn(error.message);
+            }
+        }
+
         // ═══════════════════════════════════════════════════════════════
         // HEADER
         // ═══════════════════════════════════════════════════════════════
         doc.setFillColor(0, 51, 102); // Azul UES
         doc.rect(0, 0, pageWidth, 35, 'F');
 
+        if (logoDataUrl) {
+            doc.addImage(logoDataUrl, 'PNG', 155, 6, 22, 22);
+        }
+
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(20);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.text('SEAE', 15, 18);
 
         doc.setFontSize(10);
-        doc.setFont(undefined, 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.text('Sistema de Evaluación de Alternativas Económicas', 15, 25);
         doc.text('Universidad de El Salvador', 15, 31);
 
@@ -101,23 +140,35 @@ async function generarPDF() {
 
         doc.setTextColor(0, 51, 102);
         doc.setFontSize(11);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.text('Valor Presente Neto (VPN)', 18, yPosition);
 
         doc.setFontSize(16);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.text(`$${vpn}`, 18, yPosition + 8);
 
         // Interpretación
         const vpnNum = parseFloat(vpn.replace(/[^0-9.-]/g, ''));
-        const vpnInterpretacion = vpnNum > 0 
-            ? '✓ El proyecto es viable (VPN positivo)' 
-            : '✗ El proyecto no es viable (VPN negativo)';
-        
+        const vpnInterpretacion = vpnNum > 0
+            ? 'El proyecto es viable (VPN positivo)'
+            : 'El proyecto no es viable (VPN negativo)';
+
+        // Sanitizar cadena para evitar caracteres extraños en el PDF
+        function sanitizarTexto(str) {
+            if (typeof str !== 'string') return '';
+            // Eliminar ampersands introducidos por procesados extraños
+            let s = str.replace(/&+/g, '');
+            // Eliminar caracteres de control no imprimibles
+            s = s.replace(/[\x00-\x1F\x7F]/g, '');
+            // Limitar a caracteres visibles y acentos comunes
+            s = s.replace(/[^\w\s\-.,;:%()¿?¡!ñÑáéíóúÁÉÍÓÚÇç]/g, '');
+            return s.trim();
+        }
+
         doc.setFontSize(9);
-        doc.setFont(undefined, 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.setTextColor(100, 100, 100);
-        doc.text(vpnInterpretacion, 18, yPosition + 14);
+        doc.text(sanitizarTexto(vpnInterpretacion), 18, yPosition + 14);
 
         yPosition += 28;
 
@@ -129,23 +180,23 @@ async function generarPDF() {
 
         doc.setTextColor(245, 158, 11);
         doc.setFontSize(11);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.text('Tasa Interna de Retorno (TIR)', 18, yPosition);
 
         doc.setFontSize(16);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.text(`${tir}%`, 18, yPosition + 8);
 
         const tirNum = parseFloat(tir);
         const tasaNum = parseFloat(tasa);
         const tirInterpretacion = tirNum > tasaNum
-            ? `✓ Rentable (TIR ${tirNum.toFixed(2)}% > Tasa ${tasaNum}%)`
-            : `✗ No rentable (TIR ${tirNum.toFixed(2)}% ≤ Tasa ${tasaNum}%)`;
+            ? `Rentable (TIR ${tirNum.toFixed(2)}% > Tasa ${tasaNum}%)`
+            : `No rentable (TIR ${tirNum.toFixed(2)}% <= Tasa ${tasaNum}%)`;
 
         doc.setFontSize(9);
-        doc.setFont(undefined, 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.setTextColor(100, 100, 100);
-        doc.text(tirInterpretacion, 18, yPosition + 14);
+        doc.text(sanitizarTexto(tirInterpretacion), 18, yPosition + 14);
 
         yPosition += 28;
 
@@ -204,3 +255,20 @@ async function generarPDF() {
         alert('❌ Error al generar el PDF. Verifica la consola para más detalles.');
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const botonDescarga = document.getElementById('btnDescargar');
+
+    if (!botonDescarga) {
+        console.warn('No se encontró el botón btnDescargar para vincular el PDF.');
+        return;
+    }
+
+    botonDescarga.type = 'button';
+    botonDescarga.addEventListener('click', () => {
+        generarPDF().catch(error => {
+            console.error('Error generando PDF:', error);
+            alert('❌ No se pudo generar el PDF. Revisa la consola para más detalles.');
+        });
+    });
+});
