@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SEAE — Universidad de El Salvador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="seae.css"/>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ues" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="98" fill="#0d1b3e" stroke="#C9A84C" stroke-width="3"/>
+    <circle cx="100" cy="100" r="84" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+    <rect x="70" y="80" width="60" height="44" rx="3" fill="none" stroke="#C9A84C" stroke-width="2.2"/>
+    <line x1="100" y1="80" x2="100" y2="124" stroke="#C9A84C" stroke-width="1.8"/>
+    <line x1="76" y1="92" x2="96" y2="92" stroke="#C9A84C" stroke-width="1.1"/>
+    <line x1="76" y1="99" x2="96" y2="99" stroke="#C9A84C" stroke-width="1.1"/>
+    <line x1="76" y1="106" x2="96" y2="106" stroke="#C9A84C" stroke-width="1.1"/>
+    <line x1="104" y1="92" x2="124" y2="92" stroke="#C9A84C" stroke-width="1.1"/>
+    <line x1="104" y1="99" x2="124" y2="99" stroke="#C9A84C" stroke-width="1.1"/>
+    <line x1="104" y1="106" x2="124" y2="106" stroke="#C9A84C" stroke-width="1.1"/>
+    <ellipse cx="100" cy="70" rx="6" ry="9" fill="#C9A84C" opacity=".9"/>
+    <text x="100" y="147" text-anchor="middle" fill="#C9A84C" font-size="8.5" font-family="Georgia,serif" font-weight="700" letter-spacing="1">UNIVERSIDAD</text>
+    <text x="100" y="159" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="Georgia,serif" font-weight="700" letter-spacing="1.5">DE EL SALVADOR</text>
+  </symbol>
+</svg>
+
+<!-- LOGIN -->
+<div id="ls">
+  <div class="lc">
+    <div class="ltitle">SEAE</div>
+    <div class="lsub">Sistema de Evaluación de Alternativas Económicas</div>
+    <div class="ldept">Universidad de El Salvador · Ingeniería de Negocios</div>
+    <div id="lerr" class="lerr">Usuario o contraseña incorrectos.</div>
+    <div class="lf">
+      <label for="lu">Usuario</label>
+      <input id="lu" type="text" placeholder="Ingresa tu usuario" autocomplete="username"/>
+    </div>
+    <div class="lf">
+      <label for="lp">Contraseña</label>
+      <div class="pw-wrap">
+        <input id="lp" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        <button class="eye-btn" id="eye-btn" type="button" title="Mostrar/ocultar contraseña">👁</button>
+      </div>
+    </div>
+    <button class="btn-li" id="btn-li">Ingresar al Sistema</button>
+    <div class="lhint">Usuario: <strong>admin</strong> · Contraseña: <strong>1234</strong></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header id="hdr">
+    <div class="hi">
+  <div class="hbrand">
+       <img class="hlogo" src="logo_ues.png" alt="Logo UES" style="width: 64px; height: 64px;" />
+       <div class="hdiv"></div>
+       <div class="htxt">
+        <div class="hues">Universidad de El Salvador</div>
+  </div>
+   </div>
+      <div class="hctr">
+        <h1>Sistema de Evaluación de Alternativas Económicas</h1>
+        <div class="htxt"><div class="hseae">SEAE</div>
+      </div>
+      <div class="hrgt">
+        <div class="hbadge"><span class="bdot"></span><span id="blbl">VPN activo</span></div>
+        <button class="btn-out" id="btn-out">⬅ Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="tlb">
+    <div class="ti">
+      <div class="tg-row">
+        <span class="tlbl">Módulo:</span>
+        <div class="tg" id="mtabs">
+          <button class="mtab on" data-m="vpn">VPN</button>
+          <button class="mtab"    data-m="cae">CAE</button>
+          <button class="mtab"    data-m="tir">TIR</button>
+          <button class="mtab"    data-m="van">VAN</button>
+        </div>
+      </div>
+      <div class="tg-row">
+        <span class="tlbl">Alternativas:</span>
+        <div class="tg" id="atabs">
+          <button class="atab"    data-n="1">Solo A</button>
+          <button class="atab"    data-n="2">A · B</button>
+          <button class="atab on" data-n="3">A · B · C</button>
+          <button class="atab"    data-n="4">A · B · C · D</button>
+        </div>
+      </div>
+      <div class="tr">
+        <button class="btn-calc" id="btn-calc">⚡ Calcular</button>
+        <button class="btn-clr"  id="btn-clr">🗑 Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <div class="modtabs">
+      <button class="mtb on" data-mod="vpn">Valor Presente Neto<small>Módulo VPN</small></button>
+      <button class="mtb"    data-mod="cae">Costo Anual Equiv.<small>Módulo CAE</small></button>
+      <button class="mtb"    data-mod="tir">Tasa Interna Retorno<small>Módulo TIR</small></button>
+      <button class="mtb"    data-mod="van">Valor Actual Neto<small>Módulo VAN</small></button>
+    </div>
+
+    <!-- VPN -->
+    <div class="mod on" id="mod-vpn">
+      <div class="fbanner">
+        <span class="ficon">📈</span>
+        <div>
+          <div class="ftitle">Valor Presente Neto (VPN)</div>
+          <div class="fformula"><strong>VPN = −I₀ + Σ [Fₜ / (1+i)ᵗ]</strong> — Suma de flujos descontados menos inversión inicial.</div>
+          <div class="fuse">Criterio: VPN &gt; 0 → Aceptar · VPN &lt; 0 → Rechazar · Entre viables, el de mayor VPN es preferido</div>
+        </div>
+      </div>
+      <div class="mlayout">
+        <div class="fcol" id="fcol-vpn">
+          <div class="sh"><span class="ico">📋</span><div><h2>Datos — VPN</h2><p>Inversión, tasa, vida útil y flujos anuales</p></div></div>
+        </div>
+        <div class="rcol">
+          <div class="sh"><span class="ico">📊</span><div><h2>Resultados — VPN</h2><p>Valor Presente Neto por alternativa</p></div></div>
+          <div class="kgrid" id="kg-vpn"></div>
+          <div class="tc"><div class="tch"><h3>Flujos Descontados por Año</h3><span class="tag">Tabla anual</span></div><div class="tscr"><table class="at" id="tbl-vpn"></table></div></div>
+          <div class="tc"><div class="tch"><h3>Comparación de Indicadores</h3><span class="tag">Comparativa</span></div><div class="tscr"><table class="ct" id="ctbl-vpn"></table></div></div>
+          <div class="ac"><div class="ach"><h3>📝 Análisis Financiero Profesional — VPN</h3><span class="tag">Auto-generado</span></div><div class="ab" id="an-vpn"><div class="emp"><span>📊</span>Ingresa los datos y presiona Calcular.</div></div></div>
+          <div class="ep"><div><h3>📄 Reporte PDF — VPN</h3><p>Portada UES, tablas completas y análisis profesional.</p></div><button class="btn-pdf" onclick="exportPDF('vpn')">📑 Exportar PDF</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAE -->
+    <div class="mod" id="mod-cae">
+      <div class="fbanner">
+        <span class="ficon">📅</span>
+        <div>
+          <div class="ftitle">Costo / Valor Anual Equivalente (CAE / VAE)</div>
+          <div class="fformula"><strong>CAE = VPN × [i(1+i)ⁿ / ((1+i)ⁿ − 1)]</strong> — Convierte el VPN en una anualidad uniforme equivalente.</div>
+          <div class="fuse">Uso ideal: comparar proyectos de distinta duración. CAE mayor = mayor beneficio anual equivalente por período.</div>
+        </div>
+      </div>
+      <div class="mlayout">
+        <div class="fcol" id="fcol-cae">
+          <div class="sh"><span class="ico">📋</span><div><h2>Datos — CAE</h2><p>Inversión, tasa, vida útil, flujos anuales y salvamento</p></div></div>
+        </div>
+        <div class="rcol">
+          <div class="sh"><span class="ico">📊</span><div><h2>Resultados — CAE</h2><p>Costo Anual Equivalente por alternativa</p></div></div>
+          <div class="kgrid" id="kg-cae"></div>
+          <div class="tc"><div class="tch"><h3>Flujos Descontados por Año</h3><span class="tag">Tabla anual</span></div><div class="tscr"><table class="at" id="tbl-cae"></table></div></div>
+          <div class="tc"><div class="tch"><h3>Comparación CAE y VPN</h3><span class="tag">Comparativa</span></div><div class="tscr"><table class="ct" id="ctbl-cae"></table></div></div>
+          <div class="ac"><div class="ach"><h3>📝 Análisis Financiero Profesional — CAE</h3><span class="tag">Auto-generado</span></div><div class="ab" id="an-cae"><div class="emp"><span>📊</span>Ingresa los datos y presiona Calcular.</div></div></div>
+          <div class="ep"><div><h3>📄 Reporte PDF — CAE</h3><p>Portada UES, tabla anual, comparación CAE y análisis de anualidades equivalentes.</p></div><button class="btn-pdf" onclick="exportPDF('cae')">📑 Exportar PDF</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIR -->
+    <div class="mod" id="mod-tir">
+      <div class="fbanner">
+        <span class="ficon">📉</span>
+        <div>
+          <div class="ftitle">Tasa Interna de Retorno (TIR)</div>
+          <div class="fformula"><strong>0 = −I₀ + Σ [Fₜ / (1+TIR)ᵗ]</strong> — Tasa que hace el VPN igual a cero.</div>
+          <div class="fuse">Criterio: TIR &gt; TMAR → Aceptar · TIR &lt; TMAR → Rechazar · Mayor TIR = mayor rentabilidad intrínseca</div>
+        </div>
+      </div>
+      <div class="mlayout">
+        <div class="fcol" id="fcol-tir">
+          <div class="sh"><span class="ico">📋</span><div><h2>Datos — TIR</h2><p>Inversión, TMAR de referencia y flujos de caja</p></div></div>
+        </div>
+        <div class="rcol">
+          <div class="sh"><span class="ico">📊</span><div><h2>Resultados — TIR</h2><p>Tasa Interna de Retorno vs TMAR</p></div></div>
+          <div class="kgrid" id="kg-tir"></div>
+          <div class="tc"><div class="tch"><h3>VPN a Distintas Tasas de Descuento</h3><span class="tag">Sensibilidad</span></div><div class="tscr"><table class="at" id="tbl-tir"></table></div></div>
+          <div class="tc"><div class="tch"><h3>Comparación TIR vs TMAR</h3><span class="tag">Comparativa</span></div><div class="tscr"><table class="ct" id="ctbl-tir"></table></div></div>
+          <div class="ac"><div class="ach"><h3>📝 Análisis Financiero Profesional — TIR</h3><span class="tag">Auto-generado</span></div><div class="ab" id="an-tir"><div class="emp"><span>📊</span>Ingresa los datos y presiona Calcular.</div></div></div>
+          <div class="ep"><div><h3>📄 Reporte PDF — TIR</h3><p>Portada UES, análisis de sensibilidad, comparación TIR vs TMAR y recomendación.</p></div><button class="btn-pdf" onclick="exportPDF('tir')">📑 Exportar PDF</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAN -->
+    <div class="mod" id="mod-van">
+      <div class="fbanner">
+        <span class="ficon">🏦</span>
+        <div>
+          <div class="ftitle">Valor Actual Neto (VAN)</div>
+          <div class="fformula"><strong>VAN = −I₀ + Σ [FCₜ / (1+i)ᵗ]</strong> — Equivalente al VPN; nomenclatura internacional (NIIF/IFRS).</div>
+          <div class="fuse">Criterio: VAN &gt; 0 → Crea valor · VAN = 0 → Indiferente · VAN &lt; 0 → Destruye valor</div>
+        </div>
+      </div>
+      <div class="mlayout">
+        <div class="fcol" id="fcol-van">
+          <div class="sh"><span class="ico">📋</span><div><h2>Datos — VAN</h2><p>Inversión, tasa de descuento y flujos de caja anuales</p></div></div>
+        </div>
+        <div class="rcol">
+          <div class="sh"><span class="ico">📊</span><div><h2>Resultados — VAN</h2><p>Valor Actual Neto por alternativa</p></div></div>
+          <div class="kgrid" id="kg-van"></div>
+          <div class="tc"><div class="tch"><h3>Flujos Descontados por Año</h3><span class="tag">Tabla anual</span></div><div class="tscr"><table class="at" id="tbl-van"></table></div></div>
+          <div class="tc"><div class="tch"><h3>Comparación VAN</h3><span class="tag">Comparativa</span></div><div class="tscr"><table class="ct" id="ctbl-van"></table></div></div>
+          <div class="ac"><div class="ach"><h3>📝 Análisis Financiero Profesional — VAN</h3><span class="tag">Auto-generado</span></div><div class="ab" id="an-van"><div class="emp"><span>📊</span>Ingresa los datos y presiona Calcular.</div></div></div>
+          <div class="ep"><div><h3>📄 Reporte PDF — VAN</h3><p>Portada UES, tabla anual completa, comparación VAN y recomendación ejecutiva.</p></div><button class="btn-pdf" onclick="exportPDF('van')">📑 Exportar PDF</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="ftr">
+    <div class="fi"><div class="fbrand">
+  <img class="flogo" src="logo_ues.png" alt="Logo UES" style="width: 42px; height: 42px; opacity: 0.78;" />
+  <div class="ftxt"><strong>Universidad de El Salvador</strong><br/>Ingeniería de Negocios · Ciclo I 2026</div>
+</div>
+      <div class="frgt"><strong style="color:var(--g5);font-family:var(--fd)">SEAE</strong> — Sistema de Evaluación de Alternativas Económicas</div>
+    </div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"><span id="tio">✅</span><span id="tmg">Completado.</span></div>
+
+<script src="seae.js"></script>
+</body>
+</html>
