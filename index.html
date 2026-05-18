@@ -1,90 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEAE - Sistema de Evaluación de Alternativas Económicas</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
-
-    <!-- jsPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SEAE - Sistema de Evaluación de Alternativas Económicas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
 </head>
-
-<body>
-
-    <div id="app">
-        <header>
-            <h1>🏛️ SEAE - Sistema de Evaluación de Alternativas Económicas</h1>
-            <p class="subtitle">Universidad de El Salvador</p>
-        </header>
-
-        <div class="container-main">
-            <!-- FORMULARIO DE ENTRADA -->
-            <section class="form-section">
-                <h2>Datos de Entrada</h2>
-                <form id="formCalculos">
-                    
-                    <div class="form-group">
-                        <label for="inversionInicial">Inversión Inicial ($)</label>
-                        <input type="number" id="inversionInicial" placeholder="Ej: 50000" value="50000" step="0.01">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tasaDescuento">Tasa de Descuento (%)</label>
-                        <input type="number" id="tasaDescuento" placeholder="Ej: 12" value="12" step="0.01">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Flujos de Efectivo (años)</label>
-                        <div id="flujosContainer">
-                            <input type="number" class="flujo-input" placeholder="Año 1" value="15000" step="0.01">
-                            <input type="number" class="flujo-input" placeholder="Año 2" value="18000" step="0.01">
-                            <input type="number" class="flujo-input" placeholder="Año 3" value="20000" step="0.01">
-                        </div>
-                    </div>
-
-                    <button type="button" id="btnCalcular" class="btn btn-primary">Calcular</button>
-                </form>
-            </section>
-
-            <!-- PANEL DE RESULTADOS -->
-            <section class="results-section">
-                <h2>Resultados del Análisis</h2>
-                <div class="results-grid">
-                    <div class="result-card vpn">
-                        <div class="result-label">Valor Presente Neto (VPN)</div>
-                        <div class="result-value">$<span id="vpn">0.00</span></div>
-                        <div class="result-status" id="vpnStatus">—</div>
-                    </div>
-
-                    <div class="result-card tir">
-                        <div class="result-label">Tasa Interna de Retorno (TIR)</div>
-                        <div class="result-value"><span id="tir">0.00</span>%</div>
-                        <div class="result-status" id="tirStatus">—</div>
-                    </div>
-
-                    <div class="result-card cae">
-                        <div class="result-label">Costo Anual Equivalente (CAE)</div>
-                        <div class="result-value">$<span id="cae">0.00</span></div>
-                        <div class="result-status" id="caeStatus">—</div>
-                    </div>
-                </div>
-
-                <div class="export-buttons">
-                    <button id="btnDescargar" class="btn btn-success">📥 Descargar Reporte PDF</button>
-                    <button id="btnLimpiar" class="btn btn-secondary">🔄 Limpiar Datos</button>
-                </div>
-            </section>
-        </div>
+<body class="bg-[#f4f5f7] text-[#1e2022]">
+<div class="flex min-h-screen">
+  <!-- ============== SIDEBAR ============== -->
+  <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shrink-0">
+    <div class="p-5 flex items-center gap-3 border-b border-gray-100">
+      <div class="w-10 h-10 rounded-md bg-[#1e2022] text-white flex items-center justify-center font-bold">S</div>
+      <div>
+        <div class="font-semibold leading-tight">SEAE</div>
+        <div class="text-xs text-gray-500">Evaluación Económica</div>
+      </div>
     </div>
+    <nav class="p-4 flex-1">
+      <div class="text-[11px] font-semibold tracking-widest text-gray-400 mb-3">MÓDULOS</div>
+      <ul class="space-y-1" id="navMenu">
+        <li><a data-view="inicio" class="nav-item active"><span class="ico">▦</span> Inicio</a></li>
+        <li><a data-view="vpn"    class="nav-item"><span class="ico">∑</span> VPN</a></li>
+        <li><a data-view="cae"    class="nav-item"><span class="ico">$</span> CAE</a></li>
+        <li><a data-view="tir"    class="nav-item"><span class="ico">↗</span> TIR</a></li>
+        <li><a data-view="reportes" class="nav-item"><span class="ico">▤</span> Reportes</a></li>
+      </ul>
+    </nav>
+  </aside>
 
-    <!-- Scripts -->
-    <script src="js/calculos.js"></script>
-    <script src="js/interfaz.js"></script>
-    <script src="js/reporte.js"></script>
+  <!-- ============== MAIN ============== -->
+  <main class="flex-1 p-8 overflow-x-hidden">
+    <header class="flex items-center gap-4 mb-8">
+      <img src="logo_ues.png" alt="UES" class="w-12 h-12 rounded-full object-contain bg-white border border-gray-200" onerror="this.style.visibility='hidden'"/>
+      <div>
+        <h1 class="text-xl font-semibold">Sistema de Evaluación de Alternativas Económicas</h1>
+        <p class="text-sm text-gray-500">Panel de control</p>
+      </div>
+    </header>
 
+    <!-- ===== VISTA: INICIO ===== -->
+    <section data-view-content="inicio" class="view-content active">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div class="card"><div class="card-label">Proyectos guardados</div><div class="card-value" id="kpiTotal">0</div></div>
+        <div class="card"><div class="card-label">Cálculos VPN</div><div class="card-value" id="kpiVPN">0</div></div>
+        <div class="card"><div class="card-label">Cálculos CAE</div><div class="card-value" id="kpiCAE">0</div></div>
+        <div class="card"><div class="card-label">Cálculos TIR</div><div class="card-value" id="kpiTIR">0</div></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div class="card"><div class="card-label">Proyectos aceptados</div><div class="card-value" id="kpiAcept">0</div></div>
+        <div class="card"><div class="card-label">Proyectos rechazados</div><div class="card-value" id="kpiRech">0</div></div>
+        <div class="card"><div class="card-label">Inversión total</div><div class="card-value" id="kpiInv">$0.00</div></div>
+        <div class="card"><div class="card-label">Mejor proyecto</div>
+          <div class="text-lg font-bold leading-tight" id="kpiBestName">—</div>
+          <div class="text-sm text-gray-500" id="kpiBestVal">—</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="card">
+          <div class="font-semibold">Balance del portafolio</div>
+          <p class="text-sm text-gray-500 mb-3">Distribución de proyectos aceptados frente a rechazados.</p>
+          <div class="h-72 flex items-center justify-center"><canvas id="donutChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="font-semibold">Información relevante</div>
+          <p class="text-sm text-gray-500 mb-3">Indicadores breves para lectura rápida.</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="subcard"><div class="sub-label">BALANCE ACTUAL</div><div class="sub-value" id="balActual">0 aceptados</div><div class="text-xs text-gray-500" id="balRech">0 rechazados</div></div>
+            <div class="subcard"><div class="sub-label">INVERSIÓN PROMEDIO</div><div class="sub-value" id="invProm">$0.00</div><div class="text-xs text-gray-500">Promedio sobre el total</div></div>
+            <div class="subcard col-span-2"><div class="sub-label">MÉTODO DOMINANTE</div><div class="sub-value" id="metDom">—</div></div>
+          </div>
+          <div class="mt-4">
+            <div class="flex justify-between items-center mb-2">
+              <div class="font-medium text-sm">Últimos 3 proyectos evaluados</div>
+              <div class="text-xs text-gray-400">Nombre, método, resultado</div>
+            </div>
+            <ul id="ultimosProy" class="space-y-2"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== VISTAS DE CÁLCULO ===== -->
+    <section data-view-content="vpn" class="view-content">
+      <div class="mb-6"><h2 class="text-2xl font-bold">Valor Presente Neto</h2><p class="text-gray-500 text-sm">Calcula el VPN descontando los flujos a la tasa indicada.</p></div>
+      <div id="vpn-layout"></div>
+    </section>
+    <section data-view-content="cae" class="view-content">
+      <div class="mb-6"><h2 class="text-2xl font-bold">Costo Anual Equivalente</h2><p class="text-gray-500 text-sm">Convierte el valor presente a una anualidad equivalente para comparar alternativas.</p></div>
+      <div id="cae-layout"></div>
+    </section>
+    <section data-view-content="tir" class="view-content">
+      <div class="mb-6"><h2 class="text-2xl font-bold">Tasa Interna de Retorno</h2><p class="text-gray-500 text-sm">Calcula la tasa que hace el VPN igual a cero para cada alternativa.</p></div>
+      <div id="tir-layout"></div>
+    </section>
+
+    <!-- ===== VISTA: REPORTES ===== -->
+    <section data-view-content="reportes" class="view-content">
+      <div class="flex items-start justify-between mb-6">
+        <div><h2 class="text-2xl font-bold">Reportes</h2><p class="text-gray-500 text-sm">Exporta o imprime los cálculos guardados con una estructura clara por proyecto y método.</p></div>
+        <div class="flex gap-2">
+          <button id="btnCSV" class="btn-light">⬇ CSV</button>
+          <button id="btnPDF" class="btn-dark">Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="font-semibold">Resumen ejecutivo</div>
+        <p class="text-sm text-gray-500 mb-4">Lectura rápida del estado de la base de proyectos.</p>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div><div class="sub-label">Total proyectos</div><div class="text-3xl font-bold" id="rTotal">0</div></div>
+  <div><div class="sub-label">VPN promedio</div><div class="text-3xl font-bold" id="rVPN">$0.00</div></div>
+  <div><div class="sub-label">CAE promedio</div><div class="text-3xl font-bold" id="rCAE">$0.00</div></div>
+  <div><div class="sub-label">TIR promedio</div><div class="text-3xl font-bold" id="rTIR">0%</div></div>
+</div>
+      </div>
+      <div class="card">
+        <div class="font-semibold">Proyectos evaluados</div>
+        <p class="text-sm text-gray-500 mb-4">Resumen narrado por proyecto y método para reforzar la decisión.</p>
+        <div id="rLista" class="space-y-3"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Plantilla oculta para PDF -->
+<div id="pdfTemplate" class="hidden"></div>
+
+<!-- Plantilla del layout de cálculo -->
+<template id="tplCalculo">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+    <div class="card lg:col-span-3">
+      <div class="mb-4 pb-4 border-b border-gray-100">
+        <label class="block">
+          <span class="lbl">Nombre del Proyecto</span>
+          <input class="inp proyecto-nombre" placeholder="Ej. Ampliación de planta industrial" />
+        </label>
+        <p class="text-xs text-gray-500 mt-1">Este nombre identificará al proyecto y agrupará todas sus alternativas en los reportes.</p>
+      </div>
+      <div class="mb-3">
+        <div class="font-semibold">Alternativas (Pestañas)</div>
+        <p class="text-sm text-gray-500">Cada pestaña representa una alternativa de evaluación.</p>
+      </div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="tabs flex flex-wrap gap-2"></div>
+        <div class="flex items-center gap-2">
+          <button class="btn-light btn-add-alt">+ Alternativa</button>
+          <button class="text-sm text-gray-500 hover:text-gray-800 btn-clear">Limpiar</button>
+        </div>
+      </div>
+      <div class="alt-panels"></div>
+      <div class="mt-5 flex gap-2">
+        <button class="btn-dark btn-calc">Calcular y Comparar</button>
+        <button class="btn-light btn-save">Guardar resultados</button>
+      </div>
+    </div>
+    <div class="lg:col-span-2 space-y-4">
+      <div class="card">
+        <div class="font-semibold">Resultados y recomendación</div>
+        <div class="results-area mt-3 text-sm text-gray-500">Aún no se ha calculado.</div>
+      </div>
+      <div class="card">
+        <div class="font-semibold">Comparativo visual de alternativas</div>
+        <div class="mt-3"><canvas class="bar-chart h-64"></canvas></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tplAltPanel">
+  <div class="alt-panel">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <label class="block"><span class="lbl">Nombre de la alternativa</span><input class="inp" data-f="nombre" placeholder="Alternativa A"/></label>
+      <label class="block"><span class="lbl">Costo inicial</span><input type="number" class="inp" data-f="costo" placeholder="100000"/></label>
+      <label class="block"><span class="lbl tasa-label">Tasa de descuento (%)</span><input type="number" class="inp" data-f="tasa" placeholder="12"/></label>
+      <label class="block"><span class="lbl">Vida útil (años)</span><input type="number" class="inp" data-f="vida" placeholder="5"/></label>
+      <label class="block md:col-span-2 salvamento-wrap"><span class="lbl">Valor de salvamento</span><input type="number" class="inp" data-f="salvamento" placeholder="0"/></label>
+    </div>
+    <div class="mt-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="font-medium text-sm">Flujo de Caja</div>
+        <button class="btn-light btn-add-period">+ Periodo</button>
+      </div>
+      <div class="periods grid grid-cols-1 md:grid-cols-2 gap-2 p-3 bg-gray-50 rounded-md border border-gray-100"></div>
+    </div>
+  </div>
+</template>
+
+<script src="js/calculos.js"></script>
+<script src="js/interfaz.js"></script>
+<script src="js/reporte.js"></script>
 </body>
 </html>

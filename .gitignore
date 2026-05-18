@@ -1,9 +1,0 @@
-# Configuraciones del editor
-.vscode/
-
-# Archivos del sistema operativo (Mac/Windows)
-.DS_Store
-Thumbs.db
-
-# Archivos de registro (logs)
-*.loggit i
