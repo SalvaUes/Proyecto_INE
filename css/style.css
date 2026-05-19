@@ -1,101 +1,169 @@
-/* SEAE - estilos sobrios */
+/* SEAE - estilos sobrios con paleta elegante */
 * { box-sizing: border-box; }
-html, body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+html, body { 
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: var(--primary);
+}
+
+/* ===== Paleta de Colores ===== */
+:root {
+  --primary: #2c5282;      /* Azul oscuro mate */
+  --primary-light: #3d66a0;
+  --secondary: #475569;    /* Gris azulado */
+  --success: #16a34a;      /* Verde profundo */
+  --warning: #c4663f;      /* Naranja tostado */
+  --danger: #c84242;       /* Rojo mate */
+  --light-bg: #f8fafc;     /* Gris muy claro */
+  --sidebar-bg: #e8ecf3;   /* Gris azulado elegante */
+  --border: #cbd5e1;       /* Borde elegante */
+}
 
 /* ===== Sidebar ===== */
+aside {
+  background: var(--sidebar-bg);
+  transition: all .2s ease;
+}
+
+aside .p-5 {
+  border-color: #d0d8e3 !important;
+}
+
 .nav-item {
   display: flex; align-items: center; gap: .65rem;
   padding: .6rem .8rem; border-radius: .5rem;
-  color: #4b5563; font-size: .9rem; cursor: pointer;
-  transition: all .15s ease;
+  color: #5a6778; font-size: .9rem; cursor: pointer;
+  transition: all .2s ease;
+  font-weight: 500;
 }
-.nav-item:hover { background: #f4f5f7; color: #1e2022; }
-.nav-item.active { background: #1e2022; color: #fff; }
+.nav-item:hover { background: rgba(44, 82, 130, 0.08); color: var(--primary); font-weight: 600; }
+.nav-item.active { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(44, 82, 130, 0.25); border-radius: 0.5rem; }
 .nav-item .ico { width: 18px; text-align: center; opacity: .8; }
+
+/* ===== Botón Modo Noche ===== */
+#btnModoOscuro {
+  transition: all .2s ease;
+  background: rgba(44, 82, 130, 0.1);
+}
+#btnModoOscuro:hover {
+  background: rgba(44, 82, 130, 0.2);
+  transform: scale(1.02);
+}
 
 /* ===== Cards ===== */
 .card {
   background: #fff;
-  border: 1px solid #eceef1;
+  border: 1.5px solid var(--border);
   border-radius: .75rem;
   padding: 1.1rem 1.25rem;
-  box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+  transition: all .2s ease;
 }
-.card-label { font-size: .8rem; color: #6b7280; margin-bottom: .35rem; }
-.card-value { font-size: 1.9rem; font-weight: 700; color: #1e2022; line-height: 1.1; }
+.card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(44, 82, 130, 0.1); }
+.card-label { font-size: .8rem; color: #94a3b8; margin-bottom: .35rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-value { font-size: 1.9rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
 
 .subcard {
-  background: #fafafa;
-  border: 1px solid #eceef1;
+  background: var(--light-bg);
+  border: 1px solid var(--border);
   border-radius: .6rem;
   padding: .8rem .9rem;
+  transition: background .2s ease;
 }
-.sub-label { font-size: .7rem; font-weight: 600; letter-spacing: .08em; color: #6b7280; }
-.sub-value { font-size: 1.1rem; font-weight: 700; margin-top: .15rem; }
+.subcard:hover { background: #f1f5f9; }
+.sub-label { font-size: .7rem; font-weight: 600; letter-spacing: .08em; color: #64748b; text-transform: uppercase; }
+.sub-value { font-size: 1.1rem; font-weight: 700; margin-top: .15rem; color: var(--primary); }
 
 /* ===== Inputs ===== */
-.lbl { display:block; font-size:.8rem; font-weight:500; color:#374151; margin-bottom:.3rem;}
+.lbl { display:block; font-size:.8rem; font-weight:600; color: var(--secondary); margin-bottom:.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .inp {
   width: 100%; padding: .55rem .75rem;
-  border: 1px solid #e5e7eb; border-radius: .5rem;
-  background: #fff; font-size: .9rem; color:#1e2022;
-  transition: border-color .15s, box-shadow .15s;
+  border: 1.5px solid var(--border); border-radius: .5rem;
+  background: #fff; font-size: .9rem; color: var(--primary);
+  transition: border-color .2s, box-shadow .2s;
 }
-.inp:focus { outline: none; border-color: #1e2022; box-shadow: 0 0 0 3px rgba(30,32,34,.08); }
+.inp:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1); }
 
 /* ===== Buttons ===== */
 .btn-dark {
-  background: #1e2022; color: #fff;
+  background: var(--primary); color: #fff;
   padding: .55rem 1rem; border-radius: .5rem;
-  font-size: .85rem; font-weight: 500;
-  transition: opacity .15s;
+  font-size: .85rem; font-weight: 600;
+  transition: all .2s ease;
+  border: none; cursor: pointer; box-shadow: 0 2px 6px rgba(44, 82, 130, 0.2);
 }
-.btn-dark:hover { opacity: .9; }
+.btn-dark:hover { 
+  background: #3d66a0; 
+  box-shadow: 0 4px 12px rgba(44, 82, 130, 0.3);
+  transform: translateY(-1px);
+}
 .btn-light {
-  background: #fff; color: #1e2022;
+  background: var(--light-bg); color: var(--primary);
   padding: .55rem 1rem; border-radius: .5rem;
-  font-size: .85rem; font-weight: 500;
-  border: 1px solid #e5e7eb;
+  font-size: .85rem; font-weight: 600;
+  border: 1.5px solid var(--border);
+  cursor: pointer; transition: all .2s ease;
 }
-.btn-light:hover { background: #f9fafb; }
+.btn-light:hover { 
+  background: #fff; 
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(44, 82, 130, 0.1);
+}
 
 /* ===== Tabs ===== */
 .tab {
   display: inline-flex; align-items: center; gap: .5rem;
-  background: #fff; border: 1px solid #e5e7eb;
+  background: var(--light-bg); border: 1.5px solid var(--border);
   padding: .4rem .75rem; border-radius: .5rem;
-  font-size: .85rem; cursor: pointer; color:#374151;
+  font-size: .85rem; cursor: pointer; color: var(--secondary); font-weight: 500;
+  transition: all .2s ease;
 }
-.tab.active { background: #1e2022; color: #fff; border-color: #1e2022; }
-.tab .x { opacity: .7; }
+.tab:hover { border-color: var(--primary); color: var(--primary); background: #fff; }
+.tab.active { 
+  background: var(--primary); 
+  color: #fff; 
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(44, 82, 130, 0.2);
+}
+.tab .x { opacity: .7; cursor: pointer; transition: opacity .2s; }
 .tab .x:hover { opacity: 1; }
 
 /* ===== Periods ===== */
 .period-row {
   display: flex; align-items: center; gap: .5rem;
-  background: #fff; border:1px solid #eceef1;
+  background: var(--light-bg); border: 1.5px solid var(--border);
   padding: .4rem; border-radius: .5rem;
+  transition: all .2s ease;
 }
+.period-row:hover { border-color: var(--primary); background: #fff; }
 .period-tag {
-  background: #1f2a44; color: #fff;
+  background: var(--primary); color: #fff;
   font-size: .65rem; font-weight: 700; letter-spacing: .05em;
   padding: .35rem .5rem; border-radius: .35rem;
   text-align: center; min-width: 56px; line-height: 1.1;
+  box-shadow: 0 1px 3px rgba(44, 82, 130, 0.2);
 }
-.period-row input { flex: 1; }
+.period-row input { flex: 1; border-color: var(--border); }
 .btn-x {
   width: 32px; height: 32px;
-  border: 1px solid #fecaca; color: #b91c1c;
+  border: 1.5px solid #f08080; color: var(--danger);
   border-radius: .4rem; background: #fff;
   display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .2s ease; font-weight: 700;
 }
-.btn-x:hover { background: #fef2f2; }
+.btn-x:hover { background: #fee2e2; border-color: var(--danger); transform: scale(1.05); }
 
 /* ===== Badges ===== */
-.badge { font-size: .7rem; font-weight: 600; padding: .15rem .55rem; border-radius: 999px; display:inline-block; }
-.badge-method { background: #eef2ff; color: #3730a3; }
-.badge-accept { background: #dcfce7; color: #166534; }
-.badge-reject { background: #fee2e2; color: #991b1b; }
+.badge { 
+  font-size: .7rem; font-weight: 700; padding: .25rem .65rem; 
+  border-radius: 999px; display: inline-block; 
+  text-transform: uppercase; letter-spacing: 0.3px;
+  box-shadow: 0 1px 3px rgba(0,0,0, 0.1);
+}
+.badge-method { background: #dbeafe; color: var(--primary); border: 1px solid #bfdbfe; }
+.badge-accept { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.badge-reject { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
 /* Last evaluated row */
 .proy-row {
@@ -118,17 +186,22 @@ html, body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
 
 .btn-danger {
-  background-color: #dc3545;
+  background-color: var(--danger);
   color: white;
   border: none;
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
+  font-weight: 600;
+  transition: all .2s ease;
+  box-shadow: 0 1px 3px rgba(200, 66, 66, 0.2);
 }
 
 .btn-danger:hover {
-  background-color: #c82333;
+  background-color: #b33232;
+  box-shadow: 0 2px 6px rgba(200, 66, 66, 0.3);
+  transform: translateY(-1px);
 }
 
 /* Transiciones suaves para las vistas */
@@ -144,4 +217,134 @@ html, body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 @keyframes fadeIn {
   0% { opacity: 0; transform: translateY(12px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+
+/* 1. Fondo general y texto principal */
+body.dark-mode {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+/* 2. El Sidebar (aside) y Navegación */
+body.dark-mode aside {
+    background-color: #1a2332 !important;
+    border-color: #2d3e52 !important;
+}
+body.dark-mode aside .p-5 {
+    border-color: #2d3e52 !important;
+}
+body.dark-mode .nav-item { color: #94a3b8 !important; font-weight: 500 !important; }
+body.dark-mode .nav-item:hover { background-color: rgba(60, 102, 160, 0.15) !important; color: #60d0ff !important; font-weight: 600 !important; }
+body.dark-mode .nav-item.active { background-color: var(--primary) !important; color: #ffffff !important; box-shadow: 0 2px 8px rgba(44, 82, 130, 0.4) !important; }
+
+/* Botón de Modo Noche en Dark Mode */
+body.dark-mode #btnModoOscuro {
+    background-color: rgba(96, 208, 255, 0.15) !important;
+    color: #60d0ff !important;
+}
+body.dark-mode #btnModoOscuro:hover {
+    background-color: rgba(96, 208, 255, 0.25) !important;
+    color: #7dd9ff !important;
+}
+
+/* 3. Tarjetas Principales (.card, .bg-white) */
+body.dark-mode .card,
+body.dark-mode .bg-white {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+body.dark-mode .card-label { color: #94a3b8 !important; text-transform: uppercase !important; }
+body.dark-mode .card-value { color: #60d0ff !important; }
+
+/* 4. Sub-tarjetas (.subcard) */
+body.dark-mode .subcard {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+body.dark-mode .sub-label { color: #94a3b8 !important; text-transform: uppercase !important; }
+body.dark-mode .sub-value { color: #60d0ff !important; }
+
+/* 5. Inputs, Etiquetas y Formularios (.inp, .lbl) */
+body.dark-mode .lbl { color: #cbd5e1 !important; text-transform: uppercase !important; }
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode .inp {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+body.dark-mode .inp:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.2) !important; }
+
+/* 6. Botones y Pestañas */
+body.dark-mode .btn-dark {
+    background-color: var(--primary) !important;
+    box-shadow: 0 2px 8px rgba(44, 82, 130, 0.3) !important;
+}
+body.dark-mode .btn-dark:hover { 
+    background-color: #3d66a0 !important;
+    box-shadow: 0 4px 12px rgba(44, 82, 130, 0.4) !important;
+}
+body.dark-mode .btn-light,
+body.dark-mode .tab {
+    background-color: #334155 !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+body.dark-mode .btn-light:hover,
+body.dark-mode .tab:hover { 
+    background-color: #475569 !important;
+    border-color: var(--primary) !important;
+    color: #60d0ff !important;
+}
+body.dark-mode .tab.active { 
+    background-color: var(--primary) !important; 
+    border-color: var(--primary) !important;
+    box-shadow: 0 2px 8px rgba(44, 82, 130, 0.3) !important;
+}
+
+/* 7. Flujo de Caja y Periodos */
+body.dark-mode .bg-gray-50 { background-color: #0f172a !important; border-color: #334155 !important; }
+body.dark-mode .period-row {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}
+body.dark-mode .period-tag { 
+    background-color: var(--primary) !important;
+    box-shadow: 0 1px 3px rgba(44, 82, 130, 0.3) !important;
+}
+
+/* 8. Botones de Eliminar y otros */
+body.dark-mode .btn-x {
+    background-color: #1e293b !important;
+    border-color: #64748b !important;
+    color: #ff6b6b !important;
+}
+body.dark-mode .btn-x:hover { 
+    background-color: #475569 !important;
+    border-color: var(--danger) !important;
+}
+
+/* 9. Lista de Proyectos (.proy-row) */
+body.dark-mode .proy-row {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+/* 10. Textos Grises (Utilidades de Tailwind) */
+body.dark-mode .text-gray-400,
+body.dark-mode .text-gray-500,
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-800,
+body.dark-mode .text-[#1e2022] {
+    color: #94a3b8 !important;
+}
+
+/* 11. Bordes y separadores */
+body.dark-mode .border-gray-100,
+body.dark-mode .border-gray-200,
+body.dark-mode .border-b {
+    border-color: #334155 !important;
 }

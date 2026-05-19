@@ -362,9 +362,40 @@ function renderReportes() {
 /* ---------- Exponer función globalmente ---------- */
 SEAE.eliminarProyecto = eliminarProyecto;
 
+/* ---------- Modo Noche ---------- */
+function inicializarModoNoche() {
+  const body = document.body;
+  const btn = $("#btnModoOscuro");
+  const icono = $("#iconoModo");
+  const texto = $("#textoModo");
+  
+  // Restaurar preferencia guardada
+  const modoGuardado = localStorage.getItem("seae_dark_mode");
+  if (modoGuardado === "true") {
+    body.classList.add("dark-mode");
+    actualizarTextoBoton(true);
+  }
+  
+  // Manejar click del botón
+  if (btn) {
+    btn.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+      const estaDark = body.classList.contains("dark-mode");
+      localStorage.setItem("seae_dark_mode", estaDark);
+      actualizarTextoBoton(estaDark);
+    });
+  }
+  
+  function actualizarTextoBoton(estaDark) {
+    if (icono) icono.textContent = estaDark ? "☀️" : "🌙";
+    if (texto) texto.textContent = estaDark ? "Modo Claro" : "Modo Noche";
+  }
+}
+
 /* ---------- Init ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM cargado, inicializando...");
+  inicializarModoNoche();
   $$(".nav-item").forEach(n => n.addEventListener("click", () => navegar(n.dataset.view)));
   buildCalcView("VPN", "vpn-layout");
   buildCalcView("CAE", "cae-layout");
