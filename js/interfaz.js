@@ -94,7 +94,7 @@ function buildCalcView(metodo, mountId) {
     }
     
     const panel = node.content.cloneNode(true).querySelector(".alt-panel");
-    panel.querySelector(".tasa-label").textContent = isTIR ? "Tasa mínima requerida (%)" : "Tasa de descuento (%)";
+    panel.querySelector(".tasa-label").textContent = isTIR ? "Tasa mínima requerida (%)" : (metodo === "CAE" ? "Tasa Minima Aceptable de Rendimiento (%)" : "Tasa de descuento (%)");
     //if (isTIR) panel.querySelector(".salvamento-wrap").style.display = "none";
     const periods = panel.querySelector(".periods");
     for (let i = 1; i <= 3; i++) periods.appendChild(crearPeriodo(i));
@@ -186,6 +186,21 @@ function buildCalcView(metodo, mountId) {
       console.log(`Resultado ${d.nombre}:`, val, dec);
       return { ...d, valor: val, decision: dec };
     });
+
+    if (metodo === "CAE") {
+      const mejorCAE = resultados.reduce((idx, r, i, arr) => {
+        if (r.valor == null) return idx;
+        if (arr[idx].valor == null || r.valor > arr[idx].valor) return i;
+        return idx;
+      }, 0);
+
+      resultados.forEach((r, i) => {
+        r.decision = {
+          ok: i === mejorCAE,
+          texto: i === mejorCAE ? "Aceptar" : "Rechazar",
+        };
+      });
+    }
 
     let mejorIdx = 0;
     resultados.forEach((r, i) => {
