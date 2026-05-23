@@ -291,8 +291,14 @@ function renderDashboard() {
   $("#kpiCAE").textContent = ps.filter(p => p.metodo === "CAE").length;
   $("#kpiTIR").textContent = ps.filter(p => p.metodo === "TIR").length;
 
-  const acept = ps.filter(p => /Acept/i.test(p.decision)).length;
-  const rech = ps.length - acept;
+  const decisiones = ps.flatMap(p => {
+    if (Array.isArray(p.alternativas) && p.alternativas.length) {
+      return p.alternativas.map(alt => alt.decision && alt.decision.ok ? "Aceptar" : "Rechazar");
+    }
+    return [p.decision || "Rechazar"];
+  });
+  const acept = decisiones.filter(d => /Acept/i.test(d)).length;
+  const rech = decisiones.length - acept;
   $("#kpiAcept").textContent = acept;
   $("#kpiRech").textContent = rech;
 
